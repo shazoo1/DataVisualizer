@@ -17,13 +17,13 @@ namespace DataVisualizer.Desktop.ViewModel
     {
 
         #region Bindings
-        private ObservableCollection<IRenderableSeriesViewModel> _renderableSeries;
+        private ObservableCollection<IRenderableSeriesViewModel> _series;
         public ObservableCollection<IRenderableSeriesViewModel> RenderableSeries
         {
-            get { return _renderableSeries; }
+            get { return _series; }
             set
             {
-                _renderableSeries = value;
+                _series = value;
                 OnPropertyChanged("RenderableSeries");
             }
         }
@@ -102,14 +102,57 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private ICommand m_OpenFileCommand;
+        private bool _isFileOpen = false;
+        public bool IsFileOpen
+        {
+            get { return _isFileOpen; }
+            set
+            {
+                _isFileOpen = value;
+                OnPropertyChanged("IsFileOpen");
+            }
+        }
+
+        private ICommand _openFileCommand;
         public ICommand OpenFileCommand
         {
-            get { return m_OpenFileCommand; }
-            private set { m_OpenFileCommand = value; }
+            get { return _openFileCommand; }
+            private set { _openFileCommand = value; }
         }
         #endregion
-        
+
+        #region Temporary bindings
+        //They will be probably deleted after adding new features
+        private int _xValuesIndex;
+        public int XValuesIndex
+        {
+            get { return _xValuesIndex; }
+            set
+            {
+                _xValuesIndex = value;
+                OnPropertyChanged("XValuesIndex");
+            }
+        }
+
+        private int _yValuesIndex;
+        public int YValuesIndex
+        {
+            get { return _yValuesIndex; }
+            set
+            {
+                _yValuesIndex = value;
+                OnPropertyChanged("YValuesIndex");
+            }
+        }
+
+        private ICommand _addSeriesCommand;
+        public ICommand AddSeriesCommand
+        {
+            get { return _addSeriesCommand; }
+            private set { _addSeriesCommand = value; }
+        }
+        #endregion
+
         private IFileDialogService _dialogService;
 
         //TODO :: Interface
@@ -117,33 +160,22 @@ namespace DataVisualizer.Desktop.ViewModel
 
         private double[] _xValues;
 
+
         public MainViewModel()
         {
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
+            AddSeriesCommand = new RelayCommand(new Action<object>(AddSeries));
 
-            _renderableSeries = new ObservableCollection<IRenderableSeriesViewModel>();
+            _series = new ObservableCollection<IRenderableSeriesViewModel>();
             //TODO :: dinjection
             _dialogService = new FileDialogService();
             
             //Hardcode here
-            _context = new CSVContext("C:\\Users\\Arli\\Desktop\\SampleCSV.csv", ',', '"', true);
+            _context = new CSVContext();
 
-            var plotData = new XyDataSeries<double, double>() { SeriesName = "TestCSV" };
-            FileName = _context.GetFileName();
             
-            _xValues = _context.GetNumericalColumnByIndex(0);
-            double[] yAxis = _context.GetNumericalColumnByIndex(3);
-            AddSeries(yAxis);
-
             //plotData.Append(xAxis, yAxis);
-
-            RenderableSeries.Add(new LineRenderableSeriesViewModel()
-            {
-                StrokeThickness = 2,
-                Stroke = Colors.SteelBlue,
-                DataSeries = plotData,
-            });
         }
 
         public void OpenFile(object obj)
@@ -151,17 +183,27 @@ namespace DataVisualizer.Desktop.ViewModel
             try
             {
                 var file = _dialogService.OpenFile();
-                _context.SetConnectionString(file);
-                _context.ReadLines();
-                FileName = file;
+                if (!string.IsNullOrEmpty(file))
+                {
+                    _context.ReadFile(file);
+                    FileName = file;
+                    IsFileOpen = true;
+                }
             }
-            catch (Exception) { }
+            catch (Exception) { IsFileOpen = false; }
         }
 
-        public void AddSeries(double[] yValues)
+        public void AddSeries(object obj)
+        {
+            var xValues = _context.GetNumericalColumnByIndex(XValuesIndex);
+            var yValues = _context.GetNumericalColumnByIndex(YValuesIndex);
+            AddSeries(xValues, yValues);
+        }
+
+        public void AddSeries(double[] xValues, double[] yValues)
         {
             var newSeriesData = new XyDataSeries<double, double>() { SeriesName = "ChangeMe" };
-            newSeriesData.Append(_xValues, yValues);
+            newSeriesData.Append(xValues, yValues);
             RenderableSeries.Add(new LineRenderableSeriesViewModel()
             {
                 DataSeries = newSeriesData

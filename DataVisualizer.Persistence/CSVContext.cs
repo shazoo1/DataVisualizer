@@ -13,28 +13,17 @@ namespace DataVisualizer.Persistence
     public class CSVContext
     {
         private string _fileName;
-        Char Separator { get; set; } = ',';
         Char Quote { get; set; } = '"';
-        bool ContainsHeader { get; set; }
         private DataTable _data;
 
-        public CSVContext(string filePath, Char separator, bool containsHeader ) 
+        public CSVContext()
         {
-            this._fileName = filePath;
-            this.Separator = separator;
-            this.ContainsHeader = containsHeader;
-
             _data = new DataTable();
-
-            ReadLines();
         }
 
-        public CSVContext(string filePath, Char separator, Char quote, bool containsHeader)
+        public CSVContext(string filePath ) 
         {
             this._fileName = filePath;
-            this.Separator = separator;
-            this.ContainsHeader = containsHeader;
-            Quote = quote;
 
             _data = new DataTable();
 
@@ -43,11 +32,9 @@ namespace DataVisualizer.Persistence
 
         public void ReadLines()
         {
-            List<string[]> lines = new List<string[]>();
             using (var reader = new StreamReader(_fileName))
             using (var csv = new CsvReader(reader))
             {
-                csv.Configuration.HasHeaderRecord = ContainsHeader;
                 using (var csvDataReader = new CsvDataReader(csv))
                 {
                     _data.Load(csvDataReader);
@@ -63,26 +50,31 @@ namespace DataVisualizer.Persistence
 
         public double[] GetNumericalColumnByIndex(int index)
         {
-            try
+            var result = new List<double>();
+
+            var column = from DataRow row in _data.Rows
+                         select (row[index].ToString());
+            foreach (var value in column)
             {
-                return (from DataRow row in _data.Rows
-                        select double.Parse((string)row[index])).ToArray();
-            } 
-            catch (FormatException e)
-            {
-                // TODO :: Log format exception
+                //Set all cells with invalid data to 0
+                if (double.TryParse(value, out double doubleCell)) { result.Add(doubleCell); }
+                else result.Add(0);
             }
-            return null;
+
+            return result.ToArray();
         }
 
-        public string GetFileName()
+        public string[] GetTextualColumnByIndex(int index)
         {
-            return _fileName;
+            return (from DataRow row in _data.Rows
+                    select (string)row[index]).ToArray();
         }
 
-        public void SetConnectionString(string connectionString)
+        public void ReadFile(string filepath)
         {
-            _fileName = connectionString;
+            _fileName = filepath;
+            _data = new DataTable();
+            ReadLines();
         }
     }
 }

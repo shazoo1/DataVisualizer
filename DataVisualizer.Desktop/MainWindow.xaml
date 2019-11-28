@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:DataVisualizer.Desktop.ViewModel"
         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
         mc:Ignorable="d"
@@ -58,6 +59,9 @@
               Grid.Row="1"
               Grid.RowSpan="2">
             <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -65,7 +69,20 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="btnOpenFile" Content="Open File" Command="{Binding OpenFileCommand}"/>
+            <Button Grid.Row="0" x:Name="btnOpenFile" Content="Open File" Command="{Binding OpenFileCommand}"/>
+            <Grid Name="grdChartControl" Grid.Row="1" IsEnabled="{Binding IsFileOpen}">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="0" Name="iudXColumnIndex" Text="{Binding XValuesIndex}"/>
+                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1" Name="iudYColumnIndex" Text="{Binding YValuesIndex}"/>
+                <Button Grid.Row="1" Grid.ColumnSpan="2" x:Name="btnAddSeries" Content="Add series" Command="{Binding AddSeriesCommand}"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
