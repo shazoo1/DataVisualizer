@@ -95,8 +95,8 @@ namespace DataVisualizer.Desktop.ViewModel
         public string FileName
         {
             get { return _fileName; }
-            set 
-            { 
+            set
+            {
                 _fileName = value;
                 OnPropertyChanged("FileName");
             }
@@ -118,6 +118,20 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             get { return _openFileCommand; }
             private set { _openFileCommand = value; }
+        }
+
+        private ICommand _addSeriesCommand;
+        public ICommand AddSeriesCommand
+        {
+            get { return _addSeriesCommand; }
+            private set { _addSeriesCommand = value; }
+        }
+
+        private ICommand _removeSeriesCommand;
+        public ICommand RemoveSeriesCommand
+        {
+            get { return _removeSeriesCommand; }
+            private set { _removeSeriesCommand = value; }
         }
         #endregion
 
@@ -145,12 +159,6 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private ICommand _addSeriesCommand;
-        public ICommand AddSeriesCommand
-        {
-            get { return _addSeriesCommand; }
-            private set { _addSeriesCommand = value; }
-        }
         #endregion
 
         private IFileDialogService _dialogService;
@@ -158,14 +166,13 @@ namespace DataVisualizer.Desktop.ViewModel
         //TODO :: Interface
         private CSVContext _context;
 
-        private double[] _xValues;
-
 
         public MainViewModel()
         {
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
             AddSeriesCommand = new RelayCommand(new Action<object>(AddSeries));
+            RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
 
             _series = new ObservableCollection<IRenderableSeriesViewModel>();
             //TODO :: dinjection
@@ -200,14 +207,18 @@ namespace DataVisualizer.Desktop.ViewModel
             AddSeries(xValues, yValues);
         }
 
-        public void AddSeries(double[] xValues, double[] yValues)
+        public int AddSeries(double[] xValues, double[] yValues)
         {
             var newSeriesData = new XyDataSeries<double, double>() { SeriesName = "ChangeMe" };
             newSeriesData.Append(xValues, yValues);
-            RenderableSeries.Add(new LineRenderableSeriesViewModel()
-            {
-                DataSeries = newSeriesData
-            });
+            var lineSeries = new LineRenderableSeriesViewModel() { DataSeries = newSeriesData };
+            RenderableSeries.Add(lineSeries);
+            return RenderableSeries.IndexOf(lineSeries);
+        }
+
+        public void RemoveSeries(object series)
+        {
+            RenderableSeries.Remove((IRenderableSeriesViewModel)series);
         }
     }
 }

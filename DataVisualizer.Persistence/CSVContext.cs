@@ -35,9 +35,18 @@ namespace DataVisualizer.Persistence
             using (var reader = new StreamReader(_fileName))
             using (var csv = new CsvReader(reader))
             {
-                using (var csvDataReader = new CsvDataReader(csv))
+                // TODO :: Log
+                csv.Configuration.BadDataFound = null;
+                try
                 {
-                    _data.Load(csvDataReader);
+                    using (var csvDataReader = new CsvDataReader(csv))
+                    {
+                        _data.Load(csvDataReader);
+                    }
+                }
+                catch (Exception)
+                {
+                    // TODO :: Alert or smt
                 }
             }
         }

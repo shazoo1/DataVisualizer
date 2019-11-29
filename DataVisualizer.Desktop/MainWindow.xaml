@@ -10,6 +10,9 @@
         Title="MainWindow" Height="550" Width="800">
     <Window.Resources>
         <local:MainViewModel x:Key="MainViewModel"/>
+        <ControlTemplate x:Key="SeriesItemTemplate" TargetType="s:FastLineRenderableSeriesForMvvm">
+            
+        </ControlTemplate>
     </Window.Resources>
 
     <Grid DataContext="{StaticResource MainViewModel}">
@@ -61,9 +64,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.5*"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -86,6 +87,29 @@
                 <Label Grid.Row="1" Grid.Column="1" Content="Y column"/>
                 <Button Grid.Row="2" Grid.ColumnSpan="2" x:Name="btnAddSeries" Content="Add series" Command="{Binding AddSeriesCommand}"/>
             </Grid>
+            <ListView Grid.ColumnSpan="2" x:Name="lvSeriesList" Grid.Row="2" ItemsSource="{Binding RenderableSeries}" DataContext="{Binding}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Height="50" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBox Grid.Row="0" Grid.Column="0" x:Name="tbChartName" Text="{Binding Tag}"/>
+                            <Button Grid.Row="0" Grid.Column="1"
+                                    Command="{Binding ElementName=lvSeriesList, Path=DataContext.RemoveSeriesCommand}"
+                                    CommandParameter="{Binding}" 
+                                    MinWidth="25"
+                                    Content="X"
+                                    HorizontalAlignment="Right"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
     </Grid>
 </Window>
