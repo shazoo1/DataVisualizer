@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataVisualizer.Persistence
+namespace DataVisualizer.Persistence.Contracts
 {
-    public class Class1
+    public interface ICSVContext : IContext
     {
+
     }
 }

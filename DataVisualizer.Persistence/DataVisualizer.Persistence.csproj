@@ -47,7 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Contracts\IContext.cs" />
+    <Compile Include="Contracts\ICSVContext.cs" />
     <Compile Include="CSVContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

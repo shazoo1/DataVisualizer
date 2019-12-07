@@ -43,7 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\FileDialogService.cs" />
+    <Compile Include="Classes\WindowService.cs" />
     <Compile Include="Contracts\IFileDialogService.cs" />
+    <Compile Include="Contracts\IWindowService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -4,7 +4,9 @@ using System.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using DataVisualizer.Desktop.Helpers;
+using DataVisualizer.Desktop.Views;
 using DataVisualizer.Persistence;
+using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Services.Classes;
 using DavaVisualizer.Services.Contracts;
 using SciChart.Charting.Model.ChartSeries;
@@ -163,8 +165,7 @@ namespace DataVisualizer.Desktop.ViewModel
 
         private IFileDialogService _dialogService;
 
-        //TODO :: Interface
-        private CSVContext _context;
+        private IContext _context;
 
 
         public MainViewModel()
@@ -192,7 +193,7 @@ namespace DataVisualizer.Desktop.ViewModel
                 var file = _dialogService.OpenFile();
                 if (!string.IsNullOrEmpty(file))
                 {
-                    _context.ReadFile(file);
+                    _context.ReadData(file);
                     FileName = file;
                     IsFileOpen = true;
                 }
@@ -204,16 +205,24 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             var xValues = _context.GetNumericalColumnByIndex(XValuesIndex);
             var yValues = _context.GetNumericalColumnByIndex(YValuesIndex);
-            AddSeries(xValues, yValues);
+            ProceedToSelectionWindow();
+            //AddSeries(xValues, yValues);
         }
 
+        public void ProceedToSelectionWindow()
+        {
+            var model = new SelectDataViewModel(_context);
+            var view = new SelectDataWindow(model);
+            view.Show();
+        }
         public int AddSeries(double[] xValues, double[] yValues)
         {
             var newSeriesData = new XyDataSeries<double, double>() { SeriesName = "ChangeMe" };
             newSeriesData.Append(xValues, yValues);
             var lineSeries = new LineRenderableSeriesViewModel() { DataSeries = newSeriesData };
             RenderableSeries.Add(lineSeries);
-            return RenderableSeries.IndexOf(lineSeries);
+            var style = lineSeries.StyleKey;
+            return RenderableSeries.IndexOf(lineSeries); 
         }
 
         public void RemoveSeries(object series)

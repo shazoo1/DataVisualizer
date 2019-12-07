@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:DataVisualizer.Desktop"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="Views/Styles/ColumnSelectionTableStyle.xaml" />
     </Application.Resources>
 </Application>

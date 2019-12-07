@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using DataVisualizer.Persistence.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DataVisualizer.Persistence
 {
-    public class CSVContext
+    public class CSVContext : ICSVContext
     {
         private string _fileName;
         Char Quote { get; set; } = '"';
@@ -30,7 +31,14 @@ namespace DataVisualizer.Persistence
             ReadLines();
         }
 
-        public void ReadLines()
+        public DataTable ReadData(string connectionString)
+        {
+            _fileName = connectionString;
+            ReadLines();
+            return _data ?? new DataTable();
+        }
+
+        private void ReadLines()
         {
             using (var reader = new StreamReader(_fileName))
             using (var csv = new CsvReader(reader))
@@ -51,10 +59,13 @@ namespace DataVisualizer.Persistence
             }
         }
 
-        public string[] GetStringColumnByIndex(int index)
+        public DataTable GetFirstLines(int count)
         {
-            return (from DataRow row in _data.Rows
-                    select (string)row[index]).ToArray();
+            if (_data == null)
+            {
+                ReadLines();
+            }
+            return _data.Rows.Cast<System.Data.DataRow>().Take(count).CopyToDataTable() ?? new DataTable();
         }
 
         public double[] GetNumericalColumnByIndex(int index)
@@ -77,13 +88,6 @@ namespace DataVisualizer.Persistence
         {
             return (from DataRow row in _data.Rows
                     select (string)row[index]).ToArray();
-        }
-
-        public void ReadFile(string filepath)
-        {
-            _fileName = filepath;
-            _data = new DataTable();
-            ReadLines();
         }
     }
 }
