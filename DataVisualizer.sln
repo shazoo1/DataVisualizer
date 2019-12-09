@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataVisualizer.Desktop", "D
 		{D802CD92-BBCA-4AA2-B8E6-F1B15539C9B2} = {D802CD92-BBCA-4AA2-B8E6-F1B15539C9B2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DavaVisualizer.Services", "DavaVisualizer.Services\DavaVisualizer.Services.csproj", "{8734B44B-5B54-42B4-B55A-04DFF2708B00}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{C40259FD-4FB6-4CEF-B4D3-AD4666D8D143}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C40259FD-4FB6-4CEF-B4D3-AD4666D8D143}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C40259FD-4FB6-4CEF-B4D3-AD4666D8D143}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8734B44B-5B54-42B4-B55A-04DFF2708B00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8734B44B-5B54-42B4-B55A-04DFF2708B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8734B44B-5B54-42B4-B55A-04DFF2708B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8734B44B-5B54-42B4-B55A-04DFF2708B00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

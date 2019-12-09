@@ -50,6 +50,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -93,6 +96,10 @@
     <Compile Include="Helpers\DataSelectionTableBehavior.cs" />
     <Compile Include="Helpers\RangeTypesConverter.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
+    <Compile Include="Services\Classes\FileDialogService.cs" />
+    <Compile Include="Services\Classes\WindowService.cs" />
+    <Compile Include="Services\Contracts\IFileDialogService.cs" />
+    <Compile Include="Services\Contracts\IWindowService.cs" />
     <Compile Include="Templates\SeriesListItemTemplate.xaml.cs">
       <DependentUpon>SeriesListItemTemplate.xaml</DependentUpon>
     </Compile>
@@ -162,13 +169,7 @@
       <Project>{BCFA9682-EFDA-44DE-A7CF-DCBEB9293291}</Project>
       <Name>DataVisualizer.Persistence</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DavaVisualizer.Services\DavaVisualizer.Services.csproj">
-      <Project>{8734b44b-5b54-42b4-b55a-04dff2708b00}</Project>
-      <Name>DavaVisualizer.Services</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

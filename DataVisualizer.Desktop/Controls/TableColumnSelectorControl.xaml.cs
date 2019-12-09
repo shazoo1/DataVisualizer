@@ -21,16 +21,15 @@ namespace DataVisualizer.Desktop.Controls
     /// </summary>
     public partial class TableColumnSelectorControl : UserControl
     {
-        private bool[] _selectedColumns;
-        private Dictionary<Rectangle, bool> _rectangles = new Dictionary<Rectangle, bool>();
-
         //TODO :: Move to resources
         private Brush _columnNormal = new SolidColorBrush() { Opacity = 0.0 };
         private Brush _columnHover = new SolidColorBrush(Colors.CadetBlue) { Opacity = 0.3 };
         private Brush _columnSelected = new SolidColorBrush(Colors.CadetBlue) { Opacity = 0.4 };
 
+        protected Dictionary<Rectangle, bool> _rectangles = new Dictionary<Rectangle, bool>();
+
         #region Bindables
-        public readonly DependencyProperty ItemsSourceProperty =
+        public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(DataTable), typeof(TableColumnSelectorControl),
                 new FrameworkPropertyMetadata(new DataTable(), OnItemsSourceChanged));
 
@@ -40,7 +39,7 @@ namespace DataVisualizer.Desktop.Controls
             set => SetValue(ItemsSourceProperty, value);
         }
 
-        public readonly DependencyProperty AllowMultipleProperty =
+        public static readonly DependencyProperty AllowMultipleProperty =
             DependencyProperty.Register("AllowMultiple", typeof(bool), typeof(TableColumnSelectorControl),
                 new FrameworkPropertyMetadata(false));
 
@@ -49,6 +48,17 @@ namespace DataVisualizer.Desktop.Controls
             get => (bool)GetValue(AllowMultipleProperty);
             set => SetValue(AllowMultipleProperty, value);
         }
+
+        public static readonly DependencyProperty SelectedColumnsProperty =
+            DependencyProperty.Register("SelectedColumns", typeof(int[]), typeof(TableColumnSelectorControl),
+                new FrameworkPropertyMetadata(new int[0], SetSelectedColumns));
+
+        public int[] SelectedColumns
+        {
+            get => (int[])GetValue(SelectedColumnsProperty);
+            set => SetValue(SelectedColumnsProperty, value);
+        }
+
         #endregion
 
         public TableColumnSelectorControl()
@@ -111,38 +121,36 @@ namespace DataVisualizer.Desktop.Controls
 
         private void OnColumnSelected(object sender, MouseButtonEventArgs args)
         {
-            var clickedRectangle = ((Rectangle)sender);
+            Rectangle clickedRectangle = ((Rectangle)sender);
+            List<int> selected;
+            if (SelectedColumns != null)
+                selected = SelectedColumns.ToList();
+            else
+                selected = new List<int>();
+            int selectedIndex = (int)clickedRectangle.GetValue(Grid.ColumnProperty);
 
             if (_rectangles[clickedRectangle])
             {
-                _rectangles[clickedRectangle] = false;
-                clickedRectangle.Fill = _columnNormal;
+                selected.Remove(selected.Where(x => x == selectedIndex).First());
             }
             else
             {
                 if (AllowMultiple)
                 {
-                    _rectangles[clickedRectangle] = true;
-                    clickedRectangle.Fill = _columnSelected;
+                    selected.Add(selectedIndex);
                 }
                 else
                 {
-                    var highlightedRectangles = _rectangles.Where(x => x.Value == true)
-                        .Select(x => x.Key);
-                    foreach (Rectangle rect in highlightedRectangles.ToList())
-                    {
-                        _rectangles[rect] = false;
-                        rect.Fill = _columnNormal;
-                    }
-                    _rectangles[clickedRectangle] = true;
-                    clickedRectangle.Fill = _columnSelected;
+                    selected.Clear();
+                    selected.Add(selectedIndex);
                 }
             }
+            SelectedColumns = selected.ToArray();
         }
 
         private void OnColumnMouseLeave(object sender, MouseEventArgs args)
         {
-            if (!IsColumnSelected((Rectangle)sender)) 
+            if (!IsColumnSelected((Rectangle)sender))
                 ((Rectangle)sender).Fill = _columnNormal;
         }
 
@@ -150,6 +158,19 @@ namespace DataVisualizer.Desktop.Controls
         {
             if (!IsColumnSelected((Rectangle)sender))
                 ((Rectangle)sender).Fill = _columnHover;
+        }
+
+        public void ClearSelection()
+        {
+            Dictionary<Rectangle, bool> newRectangles = new Dictionary<Rectangle, bool>();
+            foreach(Rectangle rect in _rectangles.Keys)
+            {
+                Rectangle newRect = rect;
+                newRect.Fill = _columnNormal;
+
+                newRectangles.Add(newRect, false);
+            }
+            _rectangles = newRectangles;
         }
 
         private bool IsColumnSelected(Rectangle rect)
@@ -160,6 +181,24 @@ namespace DataVisualizer.Desktop.Controls
                     return true;
             }
             return false;
+        }
+
+        private static void SetSelectedColumns(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            int[] selectedIndices = (int[])e.NewValue;
+            TableColumnSelectorControl control = (TableColumnSelectorControl)d;
+            control.ClearSelection();
+            if (e.NewValue != null)
+            {
+                foreach (int index in selectedIndices)
+                {
+                    KeyValuePair<Rectangle, bool> selectedRect = control._rectangles.Where(x => ((Rectangle)x.Key).GetValue(Grid.ColumnProperty).Equals(index))
+                        .FirstOrDefault();
+                    selectedRect.Key.Fill = control._columnSelected;
+                    control._rectangles[selectedRect.Key] = true;
+                }
+                control.SelectedColumns = selectedIndices;
+            }
         }
     }
 }

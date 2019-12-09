@@ -7,8 +7,8 @@ using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Desktop.Views;
 using DataVisualizer.Persistence;
 using DataVisualizer.Persistence.Contracts;
-using DavaVisualizer.Services.Classes;
-using DavaVisualizer.Services.Contracts;
+using DavaVisualizer.Desktop.Services.Classes;
+using DavaVisualizer.Desktop.Services.Contracts;
 using SciChart.Charting.Model.ChartSeries;
 using SciChart.Charting.Model.DataSeries;
 using SciChart.Data.Model;
@@ -164,6 +164,7 @@ namespace DataVisualizer.Desktop.ViewModel
         #endregion
 
         private IFileDialogService _dialogService;
+        private IWindowService _windowService;
 
         private IContext _context;
 
@@ -172,12 +173,13 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
-            AddSeriesCommand = new RelayCommand(new Action<object>(AddSeries));
+            AddSeriesCommand = new RelayCommand(new Action<object>(AddLinePlot));
             RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
 
             _series = new ObservableCollection<IRenderableSeriesViewModel>();
             //TODO :: dinjection
             _dialogService = new FileDialogService();
+            _windowService = new WindowService();
             
             //Hardcode here
             _context = new CSVContext();
@@ -201,25 +203,27 @@ namespace DataVisualizer.Desktop.ViewModel
             catch (Exception) { IsFileOpen = false; }
         }
 
-        public void AddSeries(object obj)
-        {
-            var xValues = _context.GetNumericalColumnByIndex(XValuesIndex);
-            var yValues = _context.GetNumericalColumnByIndex(YValuesIndex);
-            ProceedToSelectionWindow();
-            //AddSeries(xValues, yValues);
-        }
-
-        public void ProceedToSelectionWindow()
+        public void AddLinePlot(object obj)
         {
             var model = new SelectDataViewModel(_context);
-            var view = new SelectDataWindow(model);
-            view.Show();
+            var selection = _windowService.SelectColumns(model);
+            if (selection != null)
+            {
+                //There must be only one range for x
+                var xValues = _context.GetNumericalColumnByIndex(selection.Value.x);
+                foreach (int yColumnIndex in selection.Value.y)
+                {
+                    var yValues = _context.GetNumericalColumnByIndex(yColumnIndex);
+                    AddSeries(xValues, yValues);
+                }
+            }
         }
         public int AddSeries(double[] xValues, double[] yValues)
         {
-            var newSeriesData = new XyDataSeries<double, double>() { SeriesName = "ChangeMe" };
+            var newSeriesData = new XyDataSeries<double, double>();
             newSeriesData.Append(xValues, yValues);
-            var lineSeries = new LineRenderableSeriesViewModel() { DataSeries = newSeriesData };
+            var lineSeries = new LineRenderableSeriesViewModel() { DataSeries = newSeriesData, 
+                Tag = "Change Name", IsVisible = true };
             RenderableSeries.Add(lineSeries);
             var style = lineSeries.StyleKey;
             return RenderableSeries.IndexOf(lineSeries); 

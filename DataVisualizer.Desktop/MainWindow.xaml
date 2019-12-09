@@ -106,6 +106,7 @@
                                     MinWidth="25"
                                     Content="X"
                                     HorizontalAlignment="Right"/>
+                            <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

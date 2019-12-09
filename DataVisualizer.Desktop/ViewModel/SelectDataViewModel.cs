@@ -1,4 +1,5 @@
 ﻿using DataVisualizer.Desktop.Enums;
+using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Persistence.Contracts;
 using SciChart.Data.Model;
 using System;
@@ -13,11 +14,20 @@ namespace DataVisualizer.Desktop.ViewModel
 {
     public class SelectDataViewModel : BindableObject
     {
+        public int[] XSelection { get; set; }
+        public int[] YSelection { get; set; }
+
+        public delegate void OnOkButtonClicked();
+        public event OnOkButtonClicked OkButtonClicked;
+
+        public delegate void OnCancelButtonClicked();
+        public event OnCancelButtonClicked CancelButtonClicked;
+
         #region Bindings
         private string _tableName;
         public string TableName
         {
-            get { return _tableName; }
+            get => _tableName; 
             set
             {
                 _tableName = value;
@@ -27,7 +37,7 @@ namespace DataVisualizer.Desktop.ViewModel
         private ICommand _cancelCommand;
         public ICommand CancelCommand
         {
-            get { return _cancelCommand; }
+            get => _cancelCommand; 
             set { _cancelCommand = value; }
         }
         private ICommand _okCommand;
@@ -40,7 +50,7 @@ namespace DataVisualizer.Desktop.ViewModel
         private DataTable _previewData;
         public DataTable PreviewData
         {
-            get { return _previewData; }
+            get => _previewData;
             set
             {
                 _previewData = value;
@@ -48,21 +58,21 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private bool _isSingleRange;
-        public bool IsSingleRange
+        private bool _isMultipleRange;
+        public bool IsMultipleRange
         {
-            get { return _isSingleRange; }
+            get => _isMultipleRange;
             set
             {
-                _isSingleRange = value;
-                OnPropertyChanged("IsSingleRange");
+                _isMultipleRange = value;
+                OnPropertyChanged("IsMultipleRange");
             }
         }
 
         private bool _containsHeader;
         public bool ContainsHeader
         {
-            get { return _containsHeader; }
+            get => _containsHeader;
             set
             {
                 _containsHeader = value;
@@ -73,31 +83,44 @@ namespace DataVisualizer.Desktop.ViewModel
         private int[] _selectedRanges;
         public int[] SelectedRanges
         {
-            get { return _selectedRanges; }
+            get => _selectedRanges;
             set
             {
                 _selectedRanges = value;
                 OnPropertyChanged("SelectedRanges");
             }
         }
-        public IEnumerable<RangeType> RangeTypes
+
+        private bool _YAxisSelected;
+        public bool YAxisSelected
         {
-            get
+            get => _YAxisSelected;
+            set
             {
-                return Enum.GetValues(typeof(RangeType)).Cast<RangeType>();
+                _YAxisSelected = value;
+                if (value)
+                {
+                    OnAxisChanged("y");
+                }
+                OnPropertyChanged("YAxisSelected");
             }
         }
 
-        private RangeType _rangeType = RangeType.Argument;
-        public RangeType RangeType
+        private bool _XAxisSelected;
+        public bool XAxisSelected
         {
-            get { return _rangeType; }
+            get => _XAxisSelected;
             set
             {
-                _rangeType = value;
-                OnPropertyChanged("RangeType");
+                _XAxisSelected = value;
+                if (value)
+                {
+                    OnAxisChanged("x");
+                }
+                OnPropertyChanged("XAxisSelected");
             }
         }
+
         #endregion
 
         IContext _context;
@@ -109,10 +132,40 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             _context = context;
 
-            //Add bindings
-
             //TODO :: Add customization
             _previewData = context.GetFirstLines(100);
+            XAxisSelected = true;
+            OkCommand = new RelayCommand(OnOkClicked);
+            CancelCommand = new RelayCommand(OnCancelClicked);
+        }
+
+        public void OnAxisChanged(string newAxis)
+        {
+            if (newAxis == "x")
+            {
+                IsMultipleRange = false;
+                YSelection = SelectedRanges;
+                SelectedRanges = XSelection;
+            }
+            else
+            {
+                IsMultipleRange = true;
+                XSelection = SelectedRanges;
+                SelectedRanges = YSelection;
+            }
+        }
+
+        public void OnOkClicked(object obj)
+        {
+            if (XAxisSelected)
+                XSelection = SelectedRanges;
+            if (YAxisSelected)
+                YSelection = SelectedRanges;
+            OkButtonClicked?.Invoke();
+        }
+        public void OnCancelClicked(object obj)
+        {
+            CancelButtonClicked?.Invoke();
         }
     }
 }

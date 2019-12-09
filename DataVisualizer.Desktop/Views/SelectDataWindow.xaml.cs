@@ -25,10 +25,15 @@ namespace DataVisualizer.Desktop.Views
             InitializeComponent();
         }
 
-        public SelectDataWindow(SelectDataViewModel _model)
+        public void OnOkButtonClicked(object sender, RoutedEventArgs e)
         {
-            InitializeComponent();
-            this.DataContext = _model;
+            DialogResult = true;
+        }
+
+        public void OnCancelButtonClicked(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            this.Close();
         }
     }
 }

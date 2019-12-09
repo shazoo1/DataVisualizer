@@ -22,25 +22,39 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <control:TableColumnSelectorControl x:Name="gridPreview"
-                                             ItemsSource="{Binding PreviewData}"/>
+                                             ItemsSource="{Binding PreviewData}"
+                                             SelectedColumns="{Binding SelectedRanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             AllowMultiple="{Binding IsMultipleRange}"/>
         
         <Grid Grid.Row="1"  Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" x:Name="btnCancel" Content="Cancel"/>
-            <Button Grid.Column="1" x:Name="btnOk" Content="OK"/>
+            <Button Grid.Column="0" x:Name="btnCancel"
+                    Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    Click="OnCancelButtonClicked"/>
+            <Button Grid.Column="1" x:Name="btnOk"
+                    Content="OK"
+                    Command="{Binding OkCommand}"
+                    Click="OnOkButtonClicked"/>
         </Grid>
         <StackPanel Grid.Column="1" Orientation="Vertical">
             <StackPanel.Resources>
                 <helpers:RangeTypesConverter x:Key="RangeTypesConverter"/>
             </StackPanel.Resources>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+            </Grid>
             <CheckBox x:Name="cbxContainsHeader" Content="Contains header" IsChecked="{Binding ContainsHeader}" />
             <RadioButton Content="Argument Value"
-                         IsChecked="{Binding Path=RangeType, Converter={StaticResource RangeTypesConverter}, ConverterParameter=Argument}"/>
+                         IsChecked="{Binding XAxisSelected}"/>
             <RadioButton Content="Function Values"
-                         IsChecked="{Binding Path=RangeType, Converter={StaticResource RangeTypesConverter}, ConverterParameter=Function}"/>
+                         IsChecked="{Binding YAxisSelected}"/>
         </StackPanel>
     </Grid>
 </Window>
