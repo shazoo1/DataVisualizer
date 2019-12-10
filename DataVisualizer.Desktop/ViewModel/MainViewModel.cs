@@ -221,17 +221,24 @@ namespace DataVisualizer.Desktop.ViewModel
         public int AddSeries(double[] xValues, double[] yValues)
         {
             var newSeriesData = new XyDataSeries<double, double>();
+            
             newSeriesData.Append(xValues, yValues);
             var lineSeries = new LineRenderableSeriesViewModel() { DataSeries = newSeriesData, 
-                Tag = "Change Name", IsVisible = true };
+                Tag = "Change Name", IsVisible = true, Stroke = GetRandomColor() };
             RenderableSeries.Add(lineSeries);
-            var style = lineSeries.StyleKey;
             return RenderableSeries.IndexOf(lineSeries); 
         }
 
         public void RemoveSeries(object series)
         {
             RenderableSeries.Remove((IRenderableSeriesViewModel)series);
+        }
+
+        private Color GetRandomColor()
+        {
+            Random rnd = new Random();
+            Color randomColor = Color.FromScRgb(1, (float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble());
+            return randomColor;
         }
     }
 }

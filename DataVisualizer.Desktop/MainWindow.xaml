@@ -7,12 +7,14 @@
         xmlns:local="clr-namespace:DataVisualizer.Desktop.ViewModel"
         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
         mc:Ignorable="d"
+        xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers"
         Title="MainWindow" Height="550" Width="800">
     <Window.Resources>
         <local:MainViewModel x:Key="MainViewModel"/>
         <ControlTemplate x:Key="SeriesItemTemplate" TargetType="s:FastLineRenderableSeriesForMvvm">
             
         </ControlTemplate>
+        <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
     </Window.Resources>
 
     <Grid DataContext="{StaticResource MainViewModel}">
@@ -106,6 +108,7 @@
                                     MinWidth="25"
                                     Content="X"
                                     HorizontalAlignment="Right"/>
+                            <Rectangle Fill="{Binding Stroke, Converter={StaticResource ColorBrushConverter}}" Grid.Row="1" Grid.Column="0"/>
                             <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
                         </Grid>
                     </DataTemplate>
