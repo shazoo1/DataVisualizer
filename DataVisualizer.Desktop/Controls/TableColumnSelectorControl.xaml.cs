@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataVisualizer.Desktop.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -46,19 +47,42 @@ namespace DataVisualizer.Desktop.Controls
         public bool AllowMultiple
         {
             get => (bool)GetValue(AllowMultipleProperty);
-            set => SetValue(AllowMultipleProperty, value);
+            set 
+            { 
+                SetValue(AllowMultipleProperty, value);
+                if (value)
+                    MaxSelectedColumns = 1;
+            } 
         }
 
         public static readonly DependencyProperty SelectedColumnsProperty =
-            DependencyProperty.Register("SelectedColumns", typeof(int[]), typeof(TableColumnSelectorControl),
-                new FrameworkPropertyMetadata(new int[0], SetSelectedColumns));
+            DependencyProperty.Register("SelectedColumns", typeof(ObservableQueue<int>), typeof(TableColumnSelectorControl),
+                new FrameworkPropertyMetadata(new ObservableQueue<int>(), SetSelectedColumns));
 
-        public int[] SelectedColumns
+        public ObservableQueue<int> SelectedColumns
         {
-            get => (int[])GetValue(SelectedColumnsProperty);
+            get => (ObservableQueue<int>)GetValue(SelectedColumnsProperty);
             set => SetValue(SelectedColumnsProperty, value);
         }
 
+        public static readonly DependencyProperty MaxSelectedColumnsProperty =
+            DependencyProperty.Register("MaxSelectedColumns", typeof(int), typeof(TableColumnSelectorControl),
+                new FrameworkPropertyMetadata(1));
+
+        public int MaxSelectedColumns
+        {
+            get => (int)GetValue(MaxSelectedColumnsProperty);
+            set
+            {
+                // 0 is for no constraints
+                if (value != 0)
+                {
+                    while (value < SelectedColumns.Count)
+                        SelectedColumns.Dequeue();
+                }
+                SetValue(MaxSelectedColumnsProperty, value);
+            }
+        }
         #endregion
 
         public TableColumnSelectorControl()
@@ -123,29 +147,24 @@ namespace DataVisualizer.Desktop.Controls
         {
             Rectangle clickedRectangle = ((Rectangle)sender);
             List<int> selected;
-            if (SelectedColumns != null)
-                selected = SelectedColumns.ToList();
-            else
-                selected = new List<int>();
+            if (SelectedColumns == null)
+                SelectedColumns = new ObservableQueue<int>();
             int selectedIndex = (int)clickedRectangle.GetValue(Grid.ColumnProperty);
 
+            //Deselect, if the rectangle is already selected
             if (_rectangles[clickedRectangle])
             {
-                selected.Remove(selected.Where(x => x == selectedIndex).First());
+                SelectedColumns = (ObservableQueue<int>)SelectedColumns.Where(x => x != selectedIndex);
             }
             else
             {
-                if (AllowMultiple)
+                // Dequeue an element if a new element violates the constraints
+                if (MaxSelectedColumns + 1 > SelectedColumns.Count && SelectedColumns.Count > 0)
                 {
-                    selected.Add(selectedIndex);
+                    SelectedColumns.Dequeue();
                 }
-                else
-                {
-                    selected.Clear();
-                    selected.Add(selectedIndex);
-                }
+                SelectedColumns.Enqueue(selectedIndex);
             }
-            SelectedColumns = selected.ToArray();
         }
 
         private void OnColumnMouseLeave(object sender, MouseEventArgs args)
@@ -185,7 +204,7 @@ namespace DataVisualizer.Desktop.Controls
 
         private static void SetSelectedColumns(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            int[] selectedIndices = (int[])e.NewValue;
+            ObservableQueue<int> selectedIndices = (ObservableQueue<int>)e.NewValue;
             TableColumnSelectorControl control = (TableColumnSelectorControl)d;
             control.ClearSelection();
             if (e.NewValue != null)
@@ -196,8 +215,8 @@ namespace DataVisualizer.Desktop.Controls
                         .FirstOrDefault();
                     selectedRect.Key.Fill = control._columnSelected;
                     control._rectangles[selectedRect.Key] = true;
+                    control.SelectedColumns.Enqueue(index);
                 }
-                control.SelectedColumns = selectedIndices;
             }
         }
     }

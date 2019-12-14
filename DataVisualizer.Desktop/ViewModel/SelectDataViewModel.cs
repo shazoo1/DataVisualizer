@@ -1,6 +1,6 @@
-﻿using DataVisualizer.Desktop.Enums;
-using DataVisualizer.Desktop.Helpers;
+﻿using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Persistence.Contracts;
+using DavaVisualizer.Desktop.Services.Contracts;
 using SciChart.Data.Model;
 using System;
 using System.Collections.Generic;
@@ -12,22 +12,26 @@ using System.Windows.Input;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
-    public class SelectDataViewModel : BindableObject
+    public abstract class SelectDataViewModel : BindableObject
     {
-        public int[] XSelection { get; set; }
-        public int[] YSelection { get; set; }
+        protected IContext _context;
+        protected IDialogService _dialogService;
 
-        public delegate void OnOkButtonClicked();
-        public event OnOkButtonClicked OkButtonClicked;
+        protected bool _error;
+        protected string _errorText;
 
         public delegate void OnCancelButtonClicked();
         public event OnCancelButtonClicked CancelButtonClicked;
 
+        public delegate void OnOkButtonClicked();
+        public event OnOkButtonClicked OkButtonClicked;
+
         #region Bindings
+
         private string _tableName;
         public string TableName
         {
-            get => _tableName; 
+            get => _tableName;
             set
             {
                 _tableName = value;
@@ -37,7 +41,7 @@ namespace DataVisualizer.Desktop.ViewModel
         private ICommand _cancelCommand;
         public ICommand CancelCommand
         {
-            get => _cancelCommand; 
+            get => _cancelCommand;
             set { _cancelCommand = value; }
         }
         private ICommand _okCommand;
@@ -80,8 +84,8 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private int[] _selectedRanges;
-        public int[] SelectedRanges
+        private ObservableQueue<int> _selectedRanges;
+        public ObservableQueue<int> SelectedRanges
         {
             get => _selectedRanges;
             set
@@ -91,79 +95,48 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private bool _YAxisSelected;
-        public bool YAxisSelected
+        private int _maxSelectedColumns;
+        public int MaxSelectedColumns
         {
-            get => _YAxisSelected;
+            get => _maxSelectedColumns;
             set
             {
-                _YAxisSelected = value;
-                if (value)
-                {
-                    OnAxisChanged("y");
-                }
-                OnPropertyChanged("YAxisSelected");
+                _maxSelectedColumns = value;
+                OnPropertyChanged("MaxSelectedColumns");
             }
         }
-
-        private bool _XAxisSelected;
-        public bool XAxisSelected
-        {
-            get => _XAxisSelected;
-            set
-            {
-                _XAxisSelected = value;
-                if (value)
-                {
-                    OnAxisChanged("x");
-                }
-                OnPropertyChanged("XAxisSelected");
-            }
-        }
-
         #endregion
 
-        IContext _context;
         public SelectDataViewModel()
         {
 
         }
-        public SelectDataViewModel(IContext context)
+
+        public SelectDataViewModel (IContext context, IDialogService dialogService)
         {
             _context = context;
+            _dialogService = dialogService;
+            _error = false;
 
-            //TODO :: Add customization
-            _previewData = context.GetFirstLines(100);
-            XAxisSelected = true;
+            PreviewData = context.GetFirstLines(100);
+
             OkCommand = new RelayCommand(OnOkClicked);
             CancelCommand = new RelayCommand(OnCancelClicked);
         }
-
-        public void OnAxisChanged(string newAxis)
+        public virtual void OnOkClicked(object obj)
         {
-            if (newAxis == "x")
+            if (_error)
             {
-                IsMultipleRange = false;
-                YSelection = SelectedRanges;
-                SelectedRanges = XSelection;
-            }
-            else
-            {
-                IsMultipleRange = true;
-                XSelection = SelectedRanges;
-                SelectedRanges = YSelection;
-            }
-        }
+                _dialogService.ShowWarning(_errorText);
 
-        public void OnOkClicked(object obj)
-        {
-            if (XAxisSelected)
-                XSelection = SelectedRanges;
-            if (YAxisSelected)
-                YSelection = SelectedRanges;
+                // Reset error immediately after warning is shown
+                _error = false;
+                _errorText = "";
+                return;
+            }
             OkButtonClicked?.Invoke();
         }
-        public void OnCancelClicked(object obj)
+        public virtual void OnCancelClicked(object obj)
         {
             CancelButtonClicked?.Invoke();
         }
