@@ -83,11 +83,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="0" Name="iudXColumnIndex" Text="{Binding XValuesIndex}" />
-                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1" Name="iudYColumnIndex" Text="{Binding YValuesIndex}" />
-                <Label Grid.Row="1" Grid.Column="0" Content="X column" />
-                <Label Grid.Row="1" Grid.Column="1" Content="Y column"/>
-                <Button Grid.Row="2" Grid.ColumnSpan="2" x:Name="btnAddSeries" Content="Add series" Command="{Binding AddSeriesCommand}"/>
+                <Button Grid.Row="2" Grid.ColumnSpan="2" x:Name="btnLinePlot" Content="Add line plot" Command="{Binding AddLinePlotCommand}"/>
             </Grid>
             <ListView Grid.ColumnSpan="2" x:Name="lvSeriesList" Grid.Row="2" ItemsSource="{Binding RenderableSeries}" DataContext="{Binding}">
                 <ListView.ItemTemplate>

@@ -14,6 +14,7 @@ namespace DataVisualizer.Desktop
     /// </summary>
     public partial class App : Application
     {
-
+        // A workaround for repeating 'random' values
+        public static Random RANDOM = new Random();
     }
 }

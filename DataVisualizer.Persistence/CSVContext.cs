@@ -3,6 +3,7 @@ using DataVisualizer.Persistence.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -45,6 +46,7 @@ namespace DataVisualizer.Persistence
             {
                 // TODO :: Log
                 csv.Configuration.BadDataFound = null;
+                csv.Configuration.CultureInfo = CultureInfo.InvariantCulture;
                 try
                 {
                     using (var csvDataReader = new CsvDataReader(csv))

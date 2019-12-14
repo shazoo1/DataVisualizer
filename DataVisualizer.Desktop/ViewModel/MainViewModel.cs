@@ -123,7 +123,7 @@ namespace DataVisualizer.Desktop.ViewModel
         }
 
         private ICommand _addSeriesCommand;
-        public ICommand AddSeriesCommand
+        public ICommand AddLinePlotCommand
         {
             get { return _addSeriesCommand; }
             private set { _addSeriesCommand = value; }
@@ -137,34 +137,7 @@ namespace DataVisualizer.Desktop.ViewModel
         }
         #endregion
 
-        #region Temporary bindings
-        //They will be probably deleted after adding new features
-        private int _xValuesIndex;
-        public int XValuesIndex
-        {
-            get { return _xValuesIndex; }
-            set
-            {
-                _xValuesIndex = value;
-                OnPropertyChanged("XValuesIndex");
-            }
-        }
-
-        private int _yValuesIndex;
-        public int YValuesIndex
-        {
-            get { return _yValuesIndex; }
-            set
-            {
-                _yValuesIndex = value;
-                OnPropertyChanged("YValuesIndex");
-            }
-        }
-
-        #endregion
-
-        private IFileDialogService _dialogService;
-        private IWindowService _windowService;
+        private IDialogService _dialogService;
 
         private IContext _context;
 
@@ -173,19 +146,15 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
-            AddSeriesCommand = new RelayCommand(new Action<object>(AddLinePlot));
+            AddLinePlotCommand = new RelayCommand(new Action<object>(AddLinePlot));
             RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
 
             _series = new ObservableCollection<IRenderableSeriesViewModel>();
             //TODO :: dinjection
-            _dialogService = new FileDialogService();
-            _windowService = new WindowService();
+            _dialogService = new DialogService();
             
             //Hardcode here
             _context = new CSVContext();
-
-            
-            //plotData.Append(xAxis, yAxis);
         }
 
         public void OpenFile(object obj)
@@ -205,8 +174,8 @@ namespace DataVisualizer.Desktop.ViewModel
 
         public void AddLinePlot(object obj)
         {
-            var model = new SelectDataViewModel(_context);
-            var selection = _windowService.SelectColumns(model);
+            var model = new SelectLinePlotDataViewModel(_context, _dialogService);
+            var selection = _dialogService.SelectLinePlotData(model);
             if (selection != null)
             {
                 //There must be only one range for x
@@ -214,11 +183,11 @@ namespace DataVisualizer.Desktop.ViewModel
                 foreach (int yColumnIndex in selection.Value.y)
                 {
                     var yValues = _context.GetNumericalColumnByIndex(yColumnIndex);
-                    AddSeries(xValues, yValues);
+                    BuildLineSeries(xValues, yValues);
                 }
             }
         }
-        public int AddSeries(double[] xValues, double[] yValues)
+        public int BuildLineSeries(double[] xValues, double[] yValues)
         {
             var newSeriesData = new XyDataSeries<double, double>();
             
@@ -237,7 +206,7 @@ namespace DataVisualizer.Desktop.ViewModel
         private Color GetRandomColor()
         {
             Random rnd = new Random();
-            Color randomColor = Color.FromScRgb(1, (float)rnd.NextDouble(), (float)rnd.NextDouble(), (float)rnd.NextDouble());
+            Color randomColor = Color.FromScRgb(1, (float)App.RANDOM.NextDouble(), (float)App.RANDOM.NextDouble(), (float)App.RANDOM.NextDouble());
             return randomColor;
         }
     }

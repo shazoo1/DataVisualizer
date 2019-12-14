@@ -95,19 +95,25 @@
     <Compile Include="Enums\RangeType.cs" />
     <Compile Include="Helpers\ColorBrushConverter.cs" />
     <Compile Include="Helpers\DataSelectionTableBehavior.cs" />
+    <Compile Include="Helpers\DataValidator.cs" />
+    <Compile Include="Helpers\ObservableQueue.cs" />
     <Compile Include="Helpers\RangeTypesConverter.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
-    <Compile Include="Services\Classes\FileDialogService.cs" />
-    <Compile Include="Services\Classes\WindowService.cs" />
-    <Compile Include="Services\Contracts\IFileDialogService.cs" />
-    <Compile Include="Services\Contracts\IWindowService.cs" />
+    <Compile Include="Services\Classes\DialogService.cs" />
+    <Compile Include="Services\Contracts\IDialogService.cs" />
     <Compile Include="Templates\SeriesListItemTemplate.xaml.cs">
       <DependentUpon>SeriesListItemTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SelectDataViewModel.cs" />
-    <Compile Include="Views\SelectDataWindow.xaml.cs">
-      <DependentUpon>SelectDataWindow.xaml</DependentUpon>
+    <Compile Include="ViewModel\SelectLinePlotDataViewModel.cs" />
+    <Compile Include="ViewModel\SelectPieChartDataViewModel.cs" />
+    <Compile Include="Views\SelectDataWindow.cs" />
+    <Compile Include="Views\SelectLinePlotDataWindow.xaml.cs">
+      <DependentUpon>SelectLinePlotDataWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectPieChartDataWindow.xaml.cs">
+      <DependentUpon>SelectPieChartDataWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\TableColumnSelectorControl.xaml">
       <SubType>Designer</SubType>
@@ -129,7 +135,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SelectDataWindow.xaml">
+    <Page Include="Views\SelectLinePlotDataWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SelectPieChartDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
