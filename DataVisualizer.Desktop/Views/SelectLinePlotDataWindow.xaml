@@ -8,7 +8,7 @@
         xmlns:control="clr-namespace:DataVisualizer.Desktop.Controls"
         xmlns:local="clr-namespace:DataVisualizer.Desktop.ViewModel"
         mc:Ignorable="d"
-        Title="Select plot data" Height="450" Width="800">
+        Title="Select XY data" Height="450" Width="800">
     <Window.Resources>
         <local:SelectLinePlotDataViewModel x:Key="SelectLinePlotDataViewModel"/>
     </Window.Resources> 
@@ -24,8 +24,7 @@
         <control:TableColumnSelectorControl x:Name="gridPreview"
                                              ItemsSource="{Binding PreviewData}"
                                              SelectedColumns="{Binding SelectedRanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             AllowMultiple="{Binding IsMultipleRange}"
-                                             MaxSelectedColumns="{Binding MaxSelectedColumns}"/>
+                                             AllowMultiple="{Binding IsMultipleRange}"/>
         
         <Grid Grid.Row="1"  Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
@@ -54,6 +53,7 @@
                          IsChecked="{Binding XAxisSelected}"/>
             <RadioButton Content="Y Values"
                          IsChecked="{Binding YAxisSelected}"/>
+            <ListBox x:Name="lbxChartType" ItemsSource="{Binding ChartTypes}" SelectedItem="{Binding ChartType}"/>
         </StackPanel>
     </Grid>
 </Window>

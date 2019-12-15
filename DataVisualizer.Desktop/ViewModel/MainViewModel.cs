@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using DataVisualizer.Common.Enums;
 using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Desktop.Views;
 using DataVisualizer.Persistence;
@@ -11,6 +12,7 @@ using DavaVisualizer.Desktop.Services.Classes;
 using DavaVisualizer.Desktop.Services.Contracts;
 using SciChart.Charting.Model.ChartSeries;
 using SciChart.Charting.Model.DataSeries;
+using SciChart.Charting.Visuals.RenderableSeries;
 using SciChart.Data.Model;
 
 namespace DataVisualizer.Desktop.ViewModel
@@ -122,11 +124,11 @@ namespace DataVisualizer.Desktop.ViewModel
             private set { _openFileCommand = value; }
         }
 
-        private ICommand _addSeriesCommand;
-        public ICommand AddLinePlotCommand
+        private ICommand _addPlotCommand;
+        public ICommand AddPlotCommand
         {
-            get { return _addSeriesCommand; }
-            private set { _addSeriesCommand = value; }
+            get { return _addPlotCommand; }
+            private set { _addPlotCommand = value; }
         }
 
         private ICommand _removeSeriesCommand;
@@ -146,7 +148,7 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
-            AddLinePlotCommand = new RelayCommand(new Action<object>(AddLinePlot));
+            AddPlotCommand = new RelayCommand(new Action<object>(AddPlot));
             RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
 
             _series = new ObservableCollection<IRenderableSeriesViewModel>();
@@ -172,10 +174,10 @@ namespace DataVisualizer.Desktop.ViewModel
             catch (Exception) { IsFileOpen = false; }
         }
 
-        public void AddLinePlot(object obj)
+        public void AddPlot(object obj)
         {
             var model = new SelectLinePlotDataViewModel(_context, _dialogService);
-            var selection = _dialogService.SelectLinePlotData(model);
+            var selection = _dialogService.SelectXYPlotData(model);
             if (selection != null)
             {
                 //There must be only one range for x
@@ -183,19 +185,49 @@ namespace DataVisualizer.Desktop.ViewModel
                 foreach (int yColumnIndex in selection.Value.y)
                 {
                     var yValues = _context.GetNumericalColumnByIndex(yColumnIndex);
-                    BuildLineSeries(xValues, yValues);
+                    BuildXYChart(xValues, yValues, selection.Value.type);
                 }
             }
         }
-        public int BuildLineSeries(double[] xValues, double[] yValues)
+
+        public int BuildXYChart(double[] xValues, double[] yValues, ChartType type)
         {
             var newSeriesData = new XyDataSeries<double, double>();
-            
+            BaseRenderableSeriesViewModel series = null;
+            switch (type)
+            {
+                case ChartType.Line:
+                    {
+                        series = new LineRenderableSeriesViewModel();
+                        break;
+                    }
+                case ChartType.Column:
+                    {
+                        series = new ColumnRenderableSeriesViewModel();
+                        break;
+                    }
+                case ChartType.Scatter:
+                    {
+                        newSeriesData.AcceptsUnsortedData = true;
+                        series = new ExtremeScatterRenderableSeriesViewModel();
+                        series.PointMarker = new SciChart.Charting.Visuals.PointMarkers.EllipsePointMarker();
+                        series.StrokeThickness = 5;
+                        break;
+                    }
+            }
             newSeriesData.Append(xValues, yValues);
-            var lineSeries = new LineRenderableSeriesViewModel() { DataSeries = newSeriesData, 
-                Tag = "Change Name", IsVisible = true, Stroke = GetRandomColor() };
-            RenderableSeries.Add(lineSeries);
-            return RenderableSeries.IndexOf(lineSeries); 
+
+            series.DataSeries = newSeriesData;
+            series.Tag = "Chart";
+            series.IsVisible = true;
+            series.Stroke = GetRandomColor();
+
+            if (series != null)
+            {
+                RenderableSeries.Add(series);
+                return RenderableSeries.IndexOf(series);
+            }
+            return -1;
         }
 
         public void RemoveSeries(object series)

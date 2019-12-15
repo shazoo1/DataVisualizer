@@ -1,4 +1,5 @@
-﻿using DataVisualizer.Desktop.Enums;
+﻿using DataVisualizer.Common.Enums;
+using DataVisualizer.Desktop.Enums;
 using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
@@ -19,7 +20,24 @@ namespace DataVisualizer.Desktop.ViewModel
         public int[] YSelection { get; set; }
 
         #region Bindings
-        
+        private Array _chartTypes;
+        public Array ChartTypes
+        {
+            get => _chartTypes;
+            private set { _chartTypes = value; }
+        }
+
+        // TODO :: Enum instead
+        private ChartType _chartType;
+        public ChartType ChartType
+        {
+            get => _chartType;
+            set 
+            { 
+                _chartType = value;
+                OnPropertyChanged("ChartType");
+            }
+        }
 
         private bool _YAxisSelected;
         public bool YAxisSelected
@@ -61,6 +79,8 @@ namespace DataVisualizer.Desktop.ViewModel
         public SelectLinePlotDataViewModel(IContext context, IDialogService dialogService) : base(context, dialogService)
         {
             XAxisSelected = true;
+            ChartType = ChartType.Line;
+            ChartTypes = Enum.GetValues(typeof(ChartType));
         }
 
         public void OnAxisChanged(string newAxis)
@@ -76,7 +96,7 @@ namespace DataVisualizer.Desktop.ViewModel
                 IsMultipleRange = true;
                 XSelection = SelectedRanges;
                 SelectedRanges = YSelection;
-                MaxSelectedColumns = 0;
+                //MaxSelectedColumns = 0;
             }
         }
         public override void OnOkClicked(object obj)

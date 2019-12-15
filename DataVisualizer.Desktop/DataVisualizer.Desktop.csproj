@@ -176,6 +176,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataVisualizer.Common\DataVisualizer.Common.csproj">
+      <Project>{D802CD92-BBCA-4AA2-B8E6-F1B15539C9B2}</Project>
+      <Name>DataVisualizer.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataVisualizer.Persistence\DataVisualizer.Persistence.csproj">
       <Project>{BCFA9682-EFDA-44DE-A7CF-DCBEB9293291}</Project>
       <Name>DataVisualizer.Persistence</Name>

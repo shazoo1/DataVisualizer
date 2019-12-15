@@ -1,4 +1,5 @@
-﻿using DataVisualizer.Desktop.ViewModel;
+﻿using DataVisualizer.Common.Enums;
+using DataVisualizer.Desktop.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace DavaVisualizer.Desktop.Services.Contracts
     {
         string OpenFile();
         (int x, int[] y)? SelectLinePlotData(SelectLinePlotDataViewModel model);
+        (int x, int[] y, ChartType type)? SelectXYPlotData(SelectLinePlotDataViewModel model);
         (string[] categories, double[] values)? SelectPieChartData(SelectPieChartDataViewModel model);
         void ShowWarning(string text);
     }

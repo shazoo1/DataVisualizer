@@ -1,4 +1,5 @@
-﻿using DataVisualizer.Desktop.ViewModel;
+﻿using DataVisualizer.Common.Enums;
+using DataVisualizer.Desktop.ViewModel;
 using DataVisualizer.Desktop.Views;
 using DavaVisualizer.Desktop.Services.Contracts;
 using Microsoft.Win32;
@@ -51,6 +52,27 @@ namespace DavaVisualizer.Desktop.Services.Classes
             return null;
         }
 
+        public (int x, int[] y, ChartType type)? SelectXYPlotData(SelectLinePlotDataViewModel model)
+        {
+            var selectionWindow = new SelectLinePlotDataWindow();
+            selectionWindow.DataContext = model;
+            model.CancelButtonClicked += () => {
+                selectionWindow.DialogResult = false;
+                selectionWindow.Close();
+            };
+            model.OkButtonClicked += () =>
+            {
+                selectionWindow.DialogResult = true;
+                selectionWindow.Close();
+            };
+            if (selectionWindow.ShowDialog() == true)
+            {
+                var values = (model.XSelection.FirstOrDefault(), model.YSelection, model.ChartType);
+                return values;
+            }
+            return null;
+        }
+
         public (string[] categories, double[] values)? SelectPieChartData(SelectPieChartDataViewModel model)
         {
             var selectionWindow = new SelectPieChartDataWindow();
@@ -75,7 +97,5 @@ namespace DavaVisualizer.Desktop.Services.Classes
         {
             MessageBox.Show(text);
         }
-
-
     }
 }

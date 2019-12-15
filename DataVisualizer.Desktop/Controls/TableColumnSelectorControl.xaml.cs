@@ -64,20 +64,21 @@ namespace DataVisualizer.Desktop.Controls
             DependencyProperty.Register("MaxSelectedColumns", typeof(int), typeof(TableColumnSelectorControl),
                 new FrameworkPropertyMetadata(1));
 
-        public int MaxSelectedColumns
-        {
-            get => (int)GetValue(MaxSelectedColumnsProperty);
-            set
-            {
-                // 0 is for no constraints
-                if (value != 0)
-                {
-                    while (value < SelectedColumns.Count)
-                        SelectedColumns.Dequeue();
-                }
-                SetValue(MaxSelectedColumnsProperty, value);
-            }
-        }
+        //TODO :: Uncomment, when queue bug is solved
+        //public int MaxSelectedColumns
+        //{
+        //    get => (int)GetValue(MaxSelectedColumnsProperty);
+        //    set
+        //    {
+        //        // 0 is for no constraints
+        //        if (value != 0)
+        //        {
+        //            while (value < SelectedColumns.Count)
+        //                SelectedColumns.Dequeue();
+        //        }
+        //        SetValue(MaxSelectedColumnsProperty, value);
+        //    }
+        //}
         #endregion
 
         public TableColumnSelectorControl()
