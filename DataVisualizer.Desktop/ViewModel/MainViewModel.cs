@@ -5,6 +5,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using DataVisualizer.Common.Enums;
 using DataVisualizer.Desktop.Helpers;
+using DataVisualizer.Desktop.Services.Classes;
+using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Desktop.Views;
 using DataVisualizer.Persistence;
 using DataVisualizer.Persistence.Contracts;
@@ -139,8 +141,8 @@ namespace DataVisualizer.Desktop.ViewModel
         }
         #endregion
 
+        private IValidationService _validationService;
         private IDialogService _dialogService;
-
         private IContext _context;
 
 
@@ -152,11 +154,13 @@ namespace DataVisualizer.Desktop.ViewModel
             RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
 
             _series = new ObservableCollection<IRenderableSeriesViewModel>();
+            _context = new CSVContext();
+            
             //TODO :: dinjection
             _dialogService = new DialogService();
+            _validationService = new ValidationService(_context);
             
             //Hardcode here
-            _context = new CSVContext();
         }
 
         public void OpenFile(object obj)
@@ -176,7 +180,7 @@ namespace DataVisualizer.Desktop.ViewModel
 
         public void AddPlot(object obj)
         {
-            var model = new SelectLinePlotDataViewModel(_context, _dialogService);
+            var model = new SelectXYPlotDataViewModel(_context, _dialogService, _validationService);
             var selection = _dialogService.SelectXYPlotData(model);
             if (selection != null)
             {
@@ -203,6 +207,7 @@ namespace DataVisualizer.Desktop.ViewModel
                     }
                 case ChartType.Column:
                     {
+                        newSeriesData.AcceptsUnsortedData = true;
                         series = new ColumnRenderableSeriesViewModel();
                         break;
                     }

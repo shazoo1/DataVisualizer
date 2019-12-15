@@ -64,7 +64,7 @@ namespace DataVisualizer.Desktop.Controls
             DependencyProperty.Register("MaxSelectedColumns", typeof(int), typeof(TableColumnSelectorControl),
                 new FrameworkPropertyMetadata(1));
 
-        //TODO :: Uncomment, when queue bug is solved
+        //TODO :: Uncomment, when queue bug is resolved
         //public int MaxSelectedColumns
         //{
         //    get => (int)GetValue(MaxSelectedColumnsProperty);

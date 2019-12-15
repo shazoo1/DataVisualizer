@@ -30,31 +30,9 @@ namespace DavaVisualizer.Desktop.Services.Classes
             else return null;
         }
 
-        // TODO :: Reuse selectors
-        public (int x, int[] y)? SelectLinePlotData(SelectLinePlotDataViewModel model)
+        public (int x, int[] y, ChartType type)? SelectXYPlotData(SelectXYPlotDataViewModel model)
         {
-            var selectionWindow = new SelectLinePlotDataWindow();
-            selectionWindow.DataContext = model;
-            model.CancelButtonClicked += () => {
-                selectionWindow.DialogResult = false;
-                selectionWindow.Close();
-            };
-            model.OkButtonClicked += () =>
-            {
-                selectionWindow.DialogResult = true;
-                selectionWindow.Close();
-            };
-            if (selectionWindow.ShowDialog() == true)
-            {
-                var values = (model.XSelection.FirstOrDefault(), model.YSelection);
-                return values;
-            }
-            return null;
-        }
-
-        public (int x, int[] y, ChartType type)? SelectXYPlotData(SelectLinePlotDataViewModel model)
-        {
-            var selectionWindow = new SelectLinePlotDataWindow();
+            var selectionWindow = new SelectXYPlotDataWindow();
             selectionWindow.DataContext = model;
             model.CancelButtonClicked += () => {
                 selectionWindow.DialogResult = false;

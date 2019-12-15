@@ -100,17 +100,19 @@
     <Compile Include="Helpers\RangeTypesConverter.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Services\Classes\DialogService.cs" />
+    <Compile Include="Services\Classes\ValidationService.cs" />
     <Compile Include="Services\Contracts\IDialogService.cs" />
+    <Compile Include="Services\Contracts\IValidationService.cs" />
     <Compile Include="Templates\SeriesListItemTemplate.xaml.cs">
       <DependentUpon>SeriesListItemTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SelectDataViewModel.cs" />
-    <Compile Include="ViewModel\SelectLinePlotDataViewModel.cs" />
+    <Compile Include="ViewModel\SelectXYPlotDataViewModel.cs" />
     <Compile Include="ViewModel\SelectPieChartDataViewModel.cs" />
     <Compile Include="Views\SelectDataWindow.cs" />
-    <Compile Include="Views\SelectLinePlotDataWindow.xaml.cs">
-      <DependentUpon>SelectLinePlotDataWindow.xaml</DependentUpon>
+    <Compile Include="Views\SelectXYPlotDataWindow.xaml.cs">
+      <DependentUpon>SelectXYPlotDataWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SelectPieChartDataWindow.xaml.cs">
       <DependentUpon>SelectPieChartDataWindow.xaml</DependentUpon>
@@ -135,7 +137,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SelectLinePlotDataWindow.xaml">
+    <Page Include="Views\SelectXYPlotDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

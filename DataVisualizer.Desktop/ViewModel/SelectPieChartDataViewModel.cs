@@ -1,4 +1,5 @@
-﻿using DataVisualizer.Persistence.Contracts;
+﻿using DataVisualizer.Desktop.Services.Contracts;
+using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
 using SciChart.Data.Model;
 using System;
@@ -41,7 +42,8 @@ namespace DataVisualizer.Desktop.ViewModel
 
         }
 
-        public SelectPieChartDataViewModel(IContext context, IDialogService dialogService) : base(context, dialogService)
+        public SelectPieChartDataViewModel(IContext context, IDialogService dialogService, IValidationService validationService) 
+            : base(context, dialogService, validationService)
         {
 
         }

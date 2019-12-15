@@ -1,4 +1,5 @@
 ﻿using DataVisualizer.Desktop.Helpers;
+using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
 using SciChart.Data.Model;
@@ -16,9 +17,10 @@ namespace DataVisualizer.Desktop.ViewModel
     {
         protected IContext _context;
         protected IDialogService _dialogService;
+        protected IValidationService _validationService;
 
-        protected bool _error;
-        protected string _errorText;
+        protected bool Error;
+        protected string ErrorText;
 
         public delegate void OnCancelButtonClicked();
         public event OnCancelButtonClicked CancelButtonClicked;
@@ -102,26 +104,27 @@ namespace DataVisualizer.Desktop.ViewModel
 
         }
 
-        public SelectDataViewModel (IContext context, IDialogService dialogService)
+        public SelectDataViewModel (IContext context, IDialogService dialogService, IValidationService validationService)
         {
             _context = context;
             _dialogService = dialogService;
-            _error = false;
+            _validationService = validationService;
+            Error = false;
 
             PreviewData = context.GetFirstLines(100);
 
             OkCommand = new RelayCommand(OnOkClicked);
             CancelCommand = new RelayCommand(OnCancelClicked);
         }
-        public virtual void OnOkClicked(object obj)
+        protected virtual void OnOkClicked(object obj)
         {
-            if (_error)
+            if (Error)
             {
-                _dialogService.ShowWarning(_errorText);
+                _dialogService.ShowWarning(ErrorText);
 
                 // Reset error immediately after warning is shown
-                _error = false;
-                _errorText = "";
+                Error = false;
+                ErrorText = "";
                 return;
             }
             OkButtonClicked?.Invoke();

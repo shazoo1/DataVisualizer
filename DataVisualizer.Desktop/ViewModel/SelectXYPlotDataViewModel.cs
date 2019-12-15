@@ -1,6 +1,7 @@
 ﻿using DataVisualizer.Common.Enums;
 using DataVisualizer.Desktop.Enums;
 using DataVisualizer.Desktop.Helpers;
+using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
 using SciChart.Data.Model;
@@ -14,7 +15,7 @@ using System.Windows.Input;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
-    public class SelectLinePlotDataViewModel : SelectDataViewModel
+    public class SelectXYPlotDataViewModel : SelectDataViewModel
     {
         public int[] XSelection { get; set; }
         public int[] YSelection { get; set; }
@@ -72,11 +73,12 @@ namespace DataVisualizer.Desktop.ViewModel
         #endregion
 
         
-        public SelectLinePlotDataViewModel() : base()
+        public SelectXYPlotDataViewModel() : base()
         {
 
         }
-        public SelectLinePlotDataViewModel(IContext context, IDialogService dialogService) : base(context, dialogService)
+        public SelectXYPlotDataViewModel(IContext context, IDialogService dialogService, IValidationService validationService)
+            : base(context, dialogService, validationService)
         {
             XAxisSelected = true;
             ChartType = ChartType.Line;
@@ -99,7 +101,7 @@ namespace DataVisualizer.Desktop.ViewModel
                 //MaxSelectedColumns = 0;
             }
         }
-        public override void OnOkClicked(object obj)
+        protected override void OnOkClicked(object obj)
         {
             if (XAxisSelected)
                 XSelection = SelectedRanges;
@@ -107,15 +109,57 @@ namespace DataVisualizer.Desktop.ViewModel
                 YSelection = SelectedRanges;
             if (XSelection == null || XSelection.Length == 0)
             {
-                _error = true;
-                _errorText += "Select X axis values.\n";
+                Error = true;
+                ErrorText += "Select X axis values.\n";
             }
             if (YSelection == null || YSelection.Length == 0)
             {
-                _error = true;
-                _errorText += "Select Y axis values.\n";
+                Error = true;
+                ErrorText += "Select Y axis values.\n";
             }
+            //No need to validate if no data selected
+            if (!Error)
+                Validate();
+            //Error message is shown in the base class. Error value will be reset.
             base.OnOkClicked(obj);
+        }
+
+        private void Validate()
+        {
+            // Very common validation can be done before specific ones
+            if (!_validationService.ValidateNumerical(XSelection) ||
+                            !_validationService.ValidateNumerical(YSelection))
+            {
+                Error = true;
+                ErrorText += string.Format("{0} chart values must be numerical.\n", ChartType.ToString());
+                return;
+            }
+            switch (ChartType)
+            {
+                case ChartType.Line:
+                    {
+                        if (!_validationService.ValidateUnique(XSelection[0]) ||
+                            !_validationService.ValidateOrdered(XSelection[0]))
+                        {
+                            Error = true;
+                            ErrorText += "X axis values must be distinct and ordered.\n";
+                        }
+                        break;
+                    }
+                case ChartType.Column:
+                    {
+                        if (!_validationService.ValidateUnique(XSelection[0]))
+                        {
+                            Error = true;
+                            ErrorText += "X axis values must be distinct.\n";
+                        }
+                        break;
+                    }
+                case ChartType.Scatter:
+                    {
+                        break;
+                    }
+            }
         }
     }
 }

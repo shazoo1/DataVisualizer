@@ -11,8 +11,7 @@ namespace DavaVisualizer.Desktop.Services.Contracts
     public interface IDialogService
     {
         string OpenFile();
-        (int x, int[] y)? SelectLinePlotData(SelectLinePlotDataViewModel model);
-        (int x, int[] y, ChartType type)? SelectXYPlotData(SelectLinePlotDataViewModel model);
+        (int x, int[] y, ChartType type)? SelectXYPlotData(SelectXYPlotDataViewModel model);
         (string[] categories, double[] values)? SelectPieChartData(SelectPieChartDataViewModel model);
         void ShowWarning(string text);
     }

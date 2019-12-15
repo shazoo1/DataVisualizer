@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="SelectPieChartDataWindow" Height="450" Width="800">
     <Window.Resources>
-        <local:SelectPieChartDataViewModel x:Key="SelectLinePlotDataViewModel"/>
+        <local:SelectPieChartDataViewModel x:Key="SelectPieChartDataViewModel"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>

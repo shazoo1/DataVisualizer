@@ -18,10 +18,10 @@ namespace DataVisualizer.Desktop.Views
     /// <summary>
     /// Interaction logic for SelectDataWindow.xaml
     /// </summary>
-    public partial class SelectLinePlotDataWindow : Window
+    public partial class SelectXYPlotDataWindow : Window
     {
         //TODO :: Inherit from SelectDataWindow
-        public SelectLinePlotDataWindow()
+        public SelectXYPlotDataWindow()
         {
             InitializeComponent();
         }

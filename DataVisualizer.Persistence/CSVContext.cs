@@ -79,8 +79,9 @@ namespace DataVisualizer.Persistence
             foreach (var value in column)
             {
                 //Set all cells with invalid data to 0
-                if (double.TryParse(value, out double doubleCell)) { result.Add(doubleCell); }
-                else result.Add(0);
+                if (double.TryParse(value, out double doubleCell))
+                    result.Add(doubleCell);
+                else throw new FormatException(string.Format("Error while reading column {0}: {1} is not recognized as number.", index, value));
             }
 
             return result.ToArray();
