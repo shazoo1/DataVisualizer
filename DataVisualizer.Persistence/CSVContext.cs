@@ -47,6 +47,7 @@ namespace DataVisualizer.Persistence
                 // TODO :: Log
                 csv.Configuration.BadDataFound = null;
                 csv.Configuration.CultureInfo = CultureInfo.InvariantCulture;
+                csv.Configuration.Delimiter = ",";
                 try
                 {
                     using (var csvDataReader = new CsvDataReader(csv))

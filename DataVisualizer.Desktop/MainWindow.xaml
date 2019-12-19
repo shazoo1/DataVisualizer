@@ -73,7 +73,7 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Row="0" x:Name="btnOpenFile" Content="Open File" Command="{Binding OpenFileCommand}"/>
-            <Button x:Name="btnAddPlot" Content="Add plot" Command="{Binding AddPlotCommand}" Grid.Row="1" IsEnabled="{Binding IsFileOpen}"/>
+            <Button x:Name="btnAddPlot" Content="Add XY plot" Command="{Binding AddPlotCommand}" Grid.Row="1" IsEnabled="{Binding IsFileOpen}"/>
             <ListView x:Name="lvSeriesList" Grid.Row="2" ItemsSource="{Binding RenderableSeries}" DataContext="{Binding}">
                 <ListView.ItemTemplate>
                     <DataTemplate>

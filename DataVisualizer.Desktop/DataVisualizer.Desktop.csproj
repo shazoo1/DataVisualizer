@@ -110,6 +110,9 @@
     <Compile Include="ViewModel\SelectDataViewModel.cs" />
     <Compile Include="ViewModel\SelectXYPlotDataViewModel.cs" />
     <Compile Include="ViewModel\SelectPieChartDataViewModel.cs" />
+    <Compile Include="Views\DataPreviewWindow.xaml.cs">
+      <DependentUpon>DataPreviewWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SelectDataWindow.cs" />
     <Compile Include="Views\SelectXYPlotDataWindow.xaml.cs">
       <DependentUpon>SelectXYPlotDataWindow.xaml</DependentUpon>
@@ -134,6 +137,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Templates\SeriesListItemTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DataPreviewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

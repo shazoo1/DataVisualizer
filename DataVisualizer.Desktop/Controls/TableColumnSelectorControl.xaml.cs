@@ -90,7 +90,9 @@ namespace DataVisualizer.Desktop.Controls
         {
             foreach (var column in table.Columns)
             {
-                grdMain.ColumnDefinitions.Add(new ColumnDefinition());
+                grdMain.ColumnDefinitions.Add(new ColumnDefinition() { 
+                Width= new GridLength(100, GridUnitType.Auto)
+                });
             }
             int rowNumber = 0;
             foreach (DataRow row in table.Rows)
@@ -100,7 +102,7 @@ namespace DataVisualizer.Desktop.Controls
                 {
                     var cellText = new TextBlock()
                     {
-                        Text = row[columnNumber].ToString(),
+                        Text = row[columnNumber].ToString()
                     };
                     grdMain.Children.Add(cellText);
                     cellText.SetValue(Grid.RowProperty, rowNumber);
