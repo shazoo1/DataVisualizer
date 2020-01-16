@@ -106,6 +106,7 @@
     <Compile Include="Templates\SeriesListItemTemplate.xaml.cs">
       <DependentUpon>SeriesListItemTemplate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\DataPreviewViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SelectDataViewModel.cs" />
     <Compile Include="ViewModel\SelectXYPlotDataViewModel.cs" />

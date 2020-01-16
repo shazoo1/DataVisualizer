@@ -67,36 +67,6 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private bool _enableZoom = true;
-        public bool EnableZoom
-        {
-            get { return _enableZoom; }
-            set
-            {
-                if (_enableZoom != value)
-                {
-                    _enableZoom = value;
-                    OnPropertyChanged("EnableZoom");
-                    if (_enableZoom) EnablePan = false;
-                }
-            }
-        }
-
-        private bool _enablePan;
-        public bool EnablePan
-        {
-            get { return _enablePan; }
-            set
-            {
-                if (_enablePan != value)
-                {
-                    _enablePan = value;
-                    OnPropertyChanged("EnablePan");
-                    if (_enablePan) EnableZoom = false;
-                }
-            }
-        }
-
         private string _fileName = "";
         public string FileName
         {
@@ -108,14 +78,25 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private bool _isFileOpen = false;
-        public bool IsFileOpen
+        private bool _isDataSourceConnected = false;
+        public bool IsDataSourceConnected
         {
-            get { return _isFileOpen; }
+            get { return _isDataSourceConnected; }
             set
             {
-                _isFileOpen = value;
-                OnPropertyChanged("IsFileOpen");
+                _isDataSourceConnected = value;
+                OnPropertyChanged("IsDataSourceConnected");
+            }
+        }
+
+        private bool _hasPlots = false;
+        public bool HasPlots
+        {
+            get => _hasPlots;
+            set
+            {
+                _hasPlots = value;
+                OnPropertyChanged("HasPlots");
             }
         }
 
@@ -167,15 +148,26 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             try
             {
-                var file = _dialogService.OpenFile();
-                if (!string.IsNullOrEmpty(file))
+                DataPreviewViewModel model;
+                if (!IsDataSourceConnected)
                 {
-                    _context.ReadData(file);
-                    FileName = file;
-                    IsFileOpen = true;
+                    FileName = _dialogService.OpenFile();
+                    model = new DataPreviewViewModel(_dialogService, _context, FileName);
+                }
+                else
+                {
+                    model = new DataPreviewViewModel(_dialogService, _context);
+                }
+                if (_dialogService.PreviewFile(model, ref _context) == true)
+                {
+                    IsDataSourceConnected = true;
                 }
             }
-            catch (Exception) { IsFileOpen = false; }
+            catch (Exception e)
+            {
+                _dialogService.ShowWarning(e.Message + "\n" + e.StackTrace);
+                IsDataSourceConnected = false; 
+            }
         }
 
         public void AddPlot(object obj)
@@ -191,6 +183,7 @@ namespace DataVisualizer.Desktop.ViewModel
                     var yValues = _context.GetNumericalColumnByIndex(yColumnIndex);
                     BuildXYChart(xValues, yValues, selection.Value.type);
                 }
+                HasPlots = _series.Count > 0;
             }
         }
 
@@ -238,6 +231,7 @@ namespace DataVisualizer.Desktop.ViewModel
         public void RemoveSeries(object series)
         {
             RenderableSeries.Remove((IRenderableSeriesViewModel)series);
+            HasPlots = _series.Count > 0;
         }
 
         private Color GetRandomColor()

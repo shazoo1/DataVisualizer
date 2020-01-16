@@ -1,6 +1,7 @@
 ﻿using DataVisualizer.Common.Enums;
 using DataVisualizer.Desktop.ViewModel;
 using DataVisualizer.Desktop.Views;
+using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
 using Microsoft.Win32;
 using System;
@@ -28,6 +29,22 @@ namespace DavaVisualizer.Desktop.Services.Classes
                 return _dialog.FileName;
             }
             else return null;
+        }
+
+        public bool PreviewFile(DataPreviewViewModel model, ref IContext context)
+        {
+            var dataPreviewWindow = new DataPreviewWindow();
+            dataPreviewWindow.DataContext = model;
+            model.OkButtonClicked += () => {
+                dataPreviewWindow.DialogResult = true;
+
+            };
+            if (dataPreviewWindow.ShowDialog() == true)
+            {
+                context = model.Context;
+                return true;
+            }
+            else return false;
         }
 
         public (int x, int[] y, ChartType type)? SelectXYPlotData(SelectXYPlotDataViewModel model)
@@ -74,6 +91,12 @@ namespace DavaVisualizer.Desktop.Services.Classes
         public void ShowWarning(string text)
         {
             MessageBox.Show(text);
+        }
+
+        public void ShowError(Exception e)
+        {
+            var messageText = string.Format("Exception: {0}\nStackTrace:{1}\nInner:{2}", e.Message, e.StackTrace, e.InnerException.Message);
+            MessageBox.Show(messageText);
         }
     }
 }

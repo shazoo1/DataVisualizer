@@ -15,66 +15,32 @@
             
         </ControlTemplate>
         <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
 
-    <Grid DataContext="{StaticResource MainViewModel}">
+    
+    <DockPanel DataContext="{StaticResource MainViewModel}">
 
         <!-- New code here. Add RowDefinitions -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="32"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="0.25*"/>
-        </Grid.ColumnDefinitions>
+        
 
-        <!-- New code here: Add controls to toggle between zoom and pan -->
-        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Background="#333">
-            <CheckBox Margin="5" Foreground="#FFF" Content="Enable Zoom?" IsChecked="{Binding EnableZoom, Mode=TwoWay}"/>
-            <CheckBox Margin="5" Foreground="#FFF" Content="Enable Pan?" IsChecked="{Binding EnablePan, Mode=TwoWay}" />
-            <Label Content="{Binding FileName, Mode=OneWay}" Foreground="White" />
-        </StackPanel>
-
-        <!-- Don't forget to add Grid.Row=1 -->
-        <s:SciChartSurface Grid.Row="1"
-                           Grid.RowSpan="2"
-                           Grid.Column="0"
-                           RenderableSeries="{s:SeriesBinding RenderableSeries}"  
-                           ChartTitle="{Binding ChartTitle}">
-            <s:SciChartSurface.XAxis>
-                <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
-            </s:SciChartSurface.XAxis>
-            <s:SciChartSurface.YAxis>
-                <s:NumericAxis AxisTitle="{Binding YAxisTitle}"/>
-            </s:SciChartSurface.YAxis>
-
-            <s:SciChartSurface.ChartModifier>
-                <!-- Ensure ModifierGroup DataContext is the MainViewModel (not the ChartViewModel)-->
-                <s:ModifierGroup>
-                    <s:RubberBandXyZoomModifier IsEnabled="{Binding EnableZoom}" />
-                    <s:ZoomPanModifier IsEnabled="{Binding EnablePan}" ClipModeX="None" />
-                    <s:ZoomExtentsModifier/>
-                </s:ModifierGroup>
-            </s:SciChartSurface.ChartModifier>
-
-        </s:SciChartSurface>
-        <Grid Grid.Column="1"
-              Grid.Row="1"
-              Grid.RowSpan="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0.5*"/>
-                <RowDefinition Height="0.5*"/>
-                <RowDefinition Height="4*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Button Grid.Row="0" x:Name="btnOpenFile" Content="Open File" Command="{Binding OpenFileCommand}"/>
-            <Button x:Name="btnAddPlot" Content="Add XY plot" Command="{Binding AddPlotCommand}" Grid.Row="1" IsEnabled="{Binding IsFileOpen}"/>
-            <ListView x:Name="lvSeriesList" Grid.Row="2" ItemsSource="{Binding RenderableSeries}" DataContext="{Binding}">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Open" Command="{Binding OpenFileCommand}"/>
+                    <MenuItem Header="_Connect..." IsEnabled="False"/>
+                    <Separator />
+                    <MenuItem Header="_Exit" />
+                </MenuItem>
+                <MenuItem Header="_Add" IsEnabled="{Binding IsDataSourceConnected}">
+                    <MenuItem Header="_XY plot" Command="{Binding AddPlotCommand}"/>
+                </MenuItem>
+            </Menu>
+        <Grid DockPanel.Dock="Right">
+            <ListView x:Name="lvSeriesList" Grid.Row="2"
+                      ItemsSource="{Binding RenderableSeries}"
+                      DataContext="{Binding}"
+                      DockPanel.Dock="Right"
+                      Visibility="{Binding HasPlots, Converter={StaticResource BoolToVisibilityConverter}}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="50" >
@@ -100,5 +66,33 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-    </Grid>
+        
+        <s:SciChartSurface Grid.Row="0"
+                           Grid.RowSpan="2"
+                           Grid.Column="0"
+                           Panel.ZIndex="0"
+                           DockPanel.Dock="Left"
+                           RenderableSeries="{s:SeriesBinding RenderableSeries}"  
+                           ChartTitle="{Binding ChartTitle}">
+            <s:SciChartSurface.XAxis>
+                <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
+            </s:SciChartSurface.XAxis>
+            <s:SciChartSurface.YAxis>
+                <s:NumericAxis AxisTitle="{Binding YAxisTitle}"/>
+            </s:SciChartSurface.YAxis>
+
+            <s:SciChartSurface.ChartModifier>
+                <!-- Ensure ModifierGroup DataContext is the MainViewModel (not the ChartViewModel)-->
+                <s:ModifierGroup>
+                    <s:RubberBandXyZoomModifier IsEnabled="True"  />
+                    <s:ZoomPanModifier IsEnabled="True" ClipModeX="None" />
+                    <s:ZoomExtentsModifier/>
+                </s:ModifierGroup>
+            </s:SciChartSurface.ChartModifier>
+
+        </s:SciChartSurface>
+        
+        
+        
+    </DockPanel>
 </Window>
