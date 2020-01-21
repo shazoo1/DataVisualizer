@@ -12,25 +12,24 @@ using DataVisualizer.Persistence;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Classes;
 using DavaVisualizer.Desktop.Services.Contracts;
-using SciChart.Charting.Model.ChartSeries;
-using SciChart.Charting.Model.DataSeries;
-using SciChart.Charting.Visuals.RenderableSeries;
-using SciChart.Data.Model;
+using Abt.Controls.SciChart.Visuals.RenderableSeries;
+using Abt.Controls.SciChart.Model.DataSeries;
+using Abt.Controls.SciChart.Model;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
-    public class MainViewModel : BindableObject
+    public class MainViewModel : BaseViewModel
     {
 
         #region Bindings
-        private ObservableCollection<IRenderableSeriesViewModel> _series;
-        public ObservableCollection<IRenderableSeriesViewModel> RenderableSeries
+        private ObservableCollection<IRenderableSeries> _series;
+        public ObservableCollection<IRenderableSeries> RenderableSeries
         {
             get { return _series; }
             set
             {
                 _series = value;
-                OnPropertyChanged("RenderableSeries");
+                RaisePropertyChanged("RenderableSeries");
             }
         }
 
@@ -41,7 +40,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _chartTitle = value;
-                OnPropertyChanged("ChartTitle");
+                RaisePropertyChanged("ChartTitle");
             }
         }
 
@@ -52,7 +51,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _xAxisTitle = value;
-                OnPropertyChanged("XAxisTitle");
+                RaisePropertyChanged("XAxisTitle");
             }
         }
 
@@ -63,7 +62,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _yAxisTitle = value;
-                OnPropertyChanged("YAxisTitle");
+                RaisePropertyChanged("YAxisTitle");
             }
         }
 
@@ -74,7 +73,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _fileName = value;
-                OnPropertyChanged("FileName");
+                RaisePropertyChanged("FileName");
             }
         }
 
@@ -85,7 +84,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _isDataSourceConnected = value;
-                OnPropertyChanged("IsDataSourceConnected");
+                RaisePropertyChanged("IsDataSourceConnected");
             }
         }
 
@@ -96,7 +95,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _hasPlots = value;
-                OnPropertyChanged("HasPlots");
+                RaisePropertyChanged("HasPlots");
             }
         }
 
@@ -134,7 +133,7 @@ namespace DataVisualizer.Desktop.ViewModel
             AddPlotCommand = new RelayCommand(new Action<object>(AddPlot));
             RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
 
-            _series = new ObservableCollection<IRenderableSeriesViewModel>();
+            _series = new ObservableCollection<IRenderableSeries>();
             _context = new CSVContext();
             
             //TODO :: dinjection
@@ -190,25 +189,25 @@ namespace DataVisualizer.Desktop.ViewModel
         public int BuildXYChart(double[] xValues, double[] yValues, ChartType type)
         {
             var newSeriesData = new XyDataSeries<double, double>();
-            BaseRenderableSeriesViewModel series = null;
+            BaseRenderableSeries series = null;
             switch (type)
             {
                 case ChartType.Line:
                     {
-                        series = new LineRenderableSeriesViewModel();
+                        series = new FastLineRenderableSeries();
                         break;
                     }
                 case ChartType.Column:
                     {
                         newSeriesData.AcceptsUnsortedData = true;
-                        series = new ColumnRenderableSeriesViewModel();
+                        series = new FastColumnRenderableSeries();
                         break;
                     }
                 case ChartType.Scatter:
                     {
                         newSeriesData.AcceptsUnsortedData = true;
-                        series = new ExtremeScatterRenderableSeriesViewModel();
-                        series.PointMarker = new SciChart.Charting.Visuals.PointMarkers.EllipsePointMarker();
+                        series = new XyScatterRenderableSeries();
+                        series.PointMarker = new Abt.Controls.SciChart.Visuals.PointMarkers.EllipsePointMarker();
                         series.StrokeThickness = 5;
                         break;
                     }
@@ -218,7 +217,7 @@ namespace DataVisualizer.Desktop.ViewModel
             series.DataSeries = newSeriesData;
             series.Tag = "Chart";
             series.IsVisible = true;
-            series.Stroke = GetRandomColor();
+            series.SeriesColor = GetRandomColor();
 
             if (series != null)
             {
@@ -230,7 +229,7 @@ namespace DataVisualizer.Desktop.ViewModel
 
         public void RemoveSeries(object series)
         {
-            RenderableSeries.Remove((IRenderableSeriesViewModel)series);
+            RenderableSeries.Remove((IRenderableSeries)series);
             HasPlots = _series.Count > 0;
         }
 

@@ -2,7 +2,7 @@
 using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
-using SciChart.Data.Model;
+using Abt.Controls.SciChart.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
-    public abstract class SelectDataViewModel : BindableObject
+    public abstract class SelectDataViewModel : BaseViewModel
     {
         protected IContext _context;
         protected IDialogService _dialogService;
@@ -37,7 +37,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _tableName = value;
-                OnPropertyChanged("TableName");
+                RaisePropertyChanged("TableName");
             }
         }
         private ICommand _cancelCommand;
@@ -60,7 +60,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _previewData = value;
-                OnPropertyChanged("PreviewData");
+                RaisePropertyChanged("PreviewData");
             }
         }
 
@@ -71,7 +71,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _isMultipleRange = value;
-                OnPropertyChanged("IsMultipleRange");
+                RaisePropertyChanged("IsMultipleRange");
             }
         }
 
@@ -82,7 +82,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _containsHeader = value;
-                OnPropertyChanged("ContainsHeader");
+                RaisePropertyChanged("ContainsHeader");
             }
         }
 
@@ -93,7 +93,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _selectedRanges = value;
-                OnPropertyChanged("SelectedRanges");
+                RaisePropertyChanged("SelectedRanges");
             }
         }
 

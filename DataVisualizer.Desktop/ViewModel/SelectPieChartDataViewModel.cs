@@ -1,7 +1,7 @@
 ﻿using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
-using SciChart.Data.Model;
+using Abt.Controls.SciChart.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _categoryValueSelected = value;
-                OnPropertyChanged("CategoryValueSelected");
+                RaisePropertyChanged("CategoryValueSelected");
             }
         }
 
@@ -32,7 +32,7 @@ namespace DataVisualizer.Desktop.ViewModel
             {
                 _onlyCategorySelected = value;
                 IsMultipleRange = true;
-                OnPropertyChanged("OnlyCategorySelected");
+                RaisePropertyChanged("OnlyCategorySelected");
             }
         }
         #endregion

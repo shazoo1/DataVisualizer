@@ -1,7 +1,6 @@
 ﻿using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
-using SciChart.Data.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +11,7 @@ using System.Windows.Input;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
-    public class DataPreviewViewModel : BindableObject
+    public class DataPreviewViewModel : BaseViewModel
     {
         public IContext Context
         {
@@ -32,7 +31,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _filePath = value;
-                OnPropertyChanged("FilePath");
+                RaisePropertyChanged("FilePath");
             }
         }
 
@@ -43,7 +42,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _isFileOpen = value;
-                OnPropertyChanged("IsFileOpen");
+                RaisePropertyChanged("IsFileOpen");
             }
         }
 
@@ -74,7 +73,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _delimiter = value;
-                OnPropertyChanged("Delimiter");
+                RaisePropertyChanged("Delimiter");
             }
         }
 
@@ -85,7 +84,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _containsHeader = value;
-                OnPropertyChanged("ContainsHeader");
+                RaisePropertyChanged("ContainsHeader");
             }
         }
         private DataTable _previewData;
@@ -95,7 +94,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set
             {
                 _previewData = value;
-                OnPropertyChanged("PreviewData");
+                RaisePropertyChanged("PreviewData");
             }
         }
 

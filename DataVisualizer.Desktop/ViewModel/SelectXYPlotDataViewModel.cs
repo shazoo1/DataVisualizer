@@ -4,7 +4,7 @@ using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
-using SciChart.Data.Model;
+using Abt.Controls.SciChart.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,7 +36,7 @@ namespace DataVisualizer.Desktop.ViewModel
             set 
             { 
                 _chartType = value;
-                OnPropertyChanged("ChartType");
+                RaisePropertyChanged("ChartType");
             }
         }
 
@@ -51,7 +51,7 @@ namespace DataVisualizer.Desktop.ViewModel
                 {
                     OnAxisChanged("y");
                 }
-                OnPropertyChanged("YAxisSelected");
+                RaisePropertyChanged("YAxisSelected");
             }
         }
 
@@ -66,7 +66,7 @@ namespace DataVisualizer.Desktop.ViewModel
                 {
                     OnAxisChanged("x");
                 }
-                OnPropertyChanged("XAxisSelected");
+                RaisePropertyChanged("XAxisSelected");
             }
         }
 

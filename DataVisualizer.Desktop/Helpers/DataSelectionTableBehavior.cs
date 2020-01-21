@@ -1,4 +1,4 @@
-﻿using SciChart.Data.Model;
+﻿using Abt.Controls.SciChart.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;

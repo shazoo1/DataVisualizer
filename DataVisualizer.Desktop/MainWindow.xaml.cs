@@ -1,5 +1,5 @@
 ﻿using DataVisualizer.Persistence;
-using SciChart.Charting.Model.DataSeries;
+using Abt.Controls.SciChart;
 using System;
 using System.Collections.Generic;
 using System.Linq;

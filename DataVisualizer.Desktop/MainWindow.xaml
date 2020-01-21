@@ -5,15 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:DataVisualizer.Desktop.ViewModel"
-        xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
         mc:Ignorable="d"
         xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers"
-        Title="MainWindow" Height="550" Width="800">
+        xmlns:prsm="http://www.codeplex.com/prism"
+        xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
+        Title="Data Visualizer" Height="550" Width="800">
     <Window.Resources>
         <local:MainViewModel x:Key="MainViewModel"/>
-        <ControlTemplate x:Key="SeriesItemTemplate" TargetType="s:FastLineRenderableSeriesForMvvm">
+        <!--<ControlTemplate x:Key="SeriesItemTemplate" TargetType="s:FastLineRenderableSeriesForMvvm">
             
-        </ControlTemplate>
+        </ControlTemplate>-->
         <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
@@ -59,7 +60,7 @@
                                     MinWidth="25"
                                     Content="X"
                                     HorizontalAlignment="Right"/>
-                            <Rectangle Fill="{Binding Stroke, Converter={StaticResource ColorBrushConverter}}" Grid.Row="1" Grid.Column="0"/>
+                            <Rectangle Fill="{Binding SeriesColor, Converter={StaticResource ColorBrushConverter}}" Grid.Row="1" Grid.Column="0"/>
                             <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
                         </Grid>
                     </DataTemplate>
@@ -72,7 +73,7 @@
                            Grid.Column="0"
                            Panel.ZIndex="0"
                            DockPanel.Dock="Left"
-                           RenderableSeries="{s:SeriesBinding RenderableSeries}"  
+                           RenderableSeries="{Binding RenderableSeries}"  
                            ChartTitle="{Binding ChartTitle}">
             <s:SciChartSurface.XAxis>
                 <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
@@ -84,9 +85,11 @@
             <s:SciChartSurface.ChartModifier>
                 <!-- Ensure ModifierGroup DataContext is the MainViewModel (not the ChartViewModel)-->
                 <s:ModifierGroup>
-                    <s:RubberBandXyZoomModifier IsEnabled="True"  />
+                    <s:RubberBandXyZoomModifier IsEnabled="False"  />
                     <s:ZoomPanModifier IsEnabled="True" ClipModeX="None" />
                     <s:ZoomExtentsModifier/>
+                    <s:MouseWheelZoomModifier x:Name="mouseWheelZoomModifier" />
+                    <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick" />
                 </s:ModifierGroup>
             </s:SciChartSurface.ChartModifier>
 
