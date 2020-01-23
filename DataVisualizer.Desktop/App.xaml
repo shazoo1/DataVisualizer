@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:DataVisualizer.Desktop"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary Source="Views/Styles/ColumnSelectionTableStyle.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views/Styles/ColumnSelectionTableStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

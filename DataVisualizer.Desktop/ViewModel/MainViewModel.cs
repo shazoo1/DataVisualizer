@@ -15,6 +15,7 @@ using DavaVisualizer.Desktop.Services.Contracts;
 using Abt.Controls.SciChart.Visuals.RenderableSeries;
 using Abt.Controls.SciChart.Model.DataSeries;
 using Abt.Controls.SciChart.Model;
+using DataVisualizer.Desktop.Enums;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
@@ -22,10 +23,31 @@ namespace DataVisualizer.Desktop.ViewModel
     {
 
         #region Bindings
+
+        private ObservableCollection<BasePlotViewModel> _tabs;
+        public ObservableCollection<BasePlotViewModel> Tabs
+        {
+            get => _tabs;
+            set
+            {
+                _tabs = value;
+                RaisePropertyChanged("Tabs");
+            }
+        }
+        private int _selectedTabIndex;
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set
+            {
+                _selectedTabIndex = value;
+                RaisePropertyChanged("SelectedTabIndex");
+            }
+        }
         private ObservableCollection<IRenderableSeries> _series;
         public ObservableCollection<IRenderableSeries> RenderableSeries
         {
-            get { return _series; }
+            get => _series;
             set
             {
                 _series = value;
@@ -130,8 +152,9 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
-            AddPlotCommand = new RelayCommand(new Action<object>(AddPlot));
+            AddPlotCommand = new RelayCommand(new Action<object>(AddXYPlot));
             RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
+            Tabs = new ObservableCollection<BasePlotViewModel>();
 
             _series = new ObservableCollection<IRenderableSeries>();
             _context = new CSVContext();
@@ -139,8 +162,9 @@ namespace DataVisualizer.Desktop.ViewModel
             //TODO :: dinjection
             _dialogService = new DialogService();
             _validationService = new ValidationService(_context);
-            
+
             //Hardcode here
+            
         }
 
         public void OpenFile(object obj)
@@ -169,24 +193,29 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        public void AddPlot(object obj)
+        public void AddXYPlot(object obj)
         {
-            var model = new SelectXYPlotDataViewModel(_context, _dialogService, _validationService);
-            var selection = _dialogService.SelectXYPlotData(model);
+            var selectionModel = new SelectXYPlotDataViewModel(_context, _dialogService, _validationService);
+            var selection = _dialogService.SelectXYPlotData(selectionModel);
             if (selection != null)
             {
+                BasePlotViewModel model = new XYPlotViewModel(_context, _dialogService, _validationService);
+                SelectedTabIndex = GetOrAddNewTab<XYPlotViewModel>(model);
+
+
                 //There must be only one range for x
                 var xValues = _context.GetNumericalColumnByIndex(selection.Value.x);
+                
                 foreach (int yColumnIndex in selection.Value.y)
                 {
                     var yValues = _context.GetNumericalColumnByIndex(yColumnIndex);
-                    BuildXYChart(xValues, yValues, selection.Value.type);
+                    model.RenderableSeries.Add(BuildXYChart(xValues, yValues, selection.Value.type));
                 }
                 HasPlots = _series.Count > 0;
             }
         }
 
-        public int BuildXYChart(double[] xValues, double[] yValues, ChartType type)
+        public BaseRenderableSeries BuildXYChart(double[] xValues, double[] yValues, ChartType type)
         {
             var newSeriesData = new XyDataSeries<double, double>();
             BaseRenderableSeries series = null;
@@ -218,13 +247,7 @@ namespace DataVisualizer.Desktop.ViewModel
             series.Tag = "Chart";
             series.IsVisible = true;
             series.SeriesColor = GetRandomColor();
-
-            if (series != null)
-            {
-                RenderableSeries.Add(series);
-                return RenderableSeries.IndexOf(series);
-            }
-            return -1;
+            return series;
         }
 
         public void RemoveSeries(object series)
@@ -238,6 +261,17 @@ namespace DataVisualizer.Desktop.ViewModel
             Random rnd = new Random();
             Color randomColor = Color.FromScRgb(1, (float)App.RANDOM.NextDouble(), (float)App.RANDOM.NextDouble(), (float)App.RANDOM.NextDouble());
             return randomColor;
+        }
+
+        //Create new tab, containing the needed Surface
+        public int GetOrAddNewTab<T>(BasePlotViewModel model) where T : BasePlotViewModel
+        {
+            if (!Tabs.Contains(model))
+            {
+                Tabs.Add((T)model);
+                model.TabIndex = Tabs.IndexOf(model);
+            }
+            return model.TabIndex;
         }
     }
 }

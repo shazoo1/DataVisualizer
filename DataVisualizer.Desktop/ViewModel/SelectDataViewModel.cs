@@ -101,7 +101,7 @@ namespace DataVisualizer.Desktop.ViewModel
 
         public SelectDataViewModel()
         {
-
+            InitializeViewModel();
         }
 
         public SelectDataViewModel (IContext context, IDialogService dialogService, IValidationService validationService)
@@ -112,10 +112,17 @@ namespace DataVisualizer.Desktop.ViewModel
             Error = false;
 
             PreviewData = context.GetFirstLines(100);
+            InitializeViewModel();
+        }
+
+        public override void InitializeViewModel()
+        {
+            base.InitializeViewModel();
 
             OkCommand = new RelayCommand(OnOkClicked);
             CancelCommand = new RelayCommand(OnCancelClicked);
         }
+
         protected virtual void OnOkClicked(object obj)
         {
             if (Error)

@@ -10,6 +10,9 @@ namespace DataVisualizer.Desktop.ViewModel
 {
     public abstract class BaseViewModel : BindableBase
     {
-        
+        public virtual void InitializeViewModel()
+        {
+
+        }
     }
 }

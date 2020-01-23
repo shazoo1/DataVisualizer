@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
+using Abt.Controls.SciChart.Visuals.RenderableSeries;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
@@ -69,10 +71,19 @@ namespace DataVisualizer.Desktop.ViewModel
                 RaisePropertyChanged("XAxisSelected");
             }
         }
-
+        private ObservableCollection<IRenderableSeries> _renderableSeries = new ObservableCollection<IRenderableSeries>();
+        public ObservableCollection<IRenderableSeries> RenderableSeries
+        {
+            get => _renderableSeries;
+            set
+            {
+                _renderableSeries = value;
+                RaisePropertyChanged("RenderableSeries");
+            }
+        }
         #endregion
 
-        
+
         public SelectXYPlotDataViewModel() : base()
         {
 

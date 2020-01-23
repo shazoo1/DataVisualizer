@@ -5,27 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:DataVisualizer.Desktop.ViewModel"
+        xmlns:templates="clr-namespace:DataVisualizer.Desktop.Templates"
         mc:Ignorable="d"
         xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers"
         xmlns:prsm="http://www.codeplex.com/prism"
         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
         Title="Data Visualizer" Height="550" Width="800">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <ResourceDictionary x:Key="GraphTabTemplates" Source="Templates/GraphTabTemplates.xaml"/>
         <local:MainViewModel x:Key="MainViewModel"/>
-        <!--<ControlTemplate x:Key="SeriesItemTemplate" TargetType="s:FastLineRenderableSeriesForMvvm">
-            
-        </ControlTemplate>-->
         <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <helpers:PlotDataTemplateSelector
+            x:Key="PlotDataTemplateSelector"/>
     </Window.Resources>
-
-    
     <DockPanel DataContext="{StaticResource MainViewModel}">
-
-        <!-- New code here. Add RowDefinitions -->
-        
-
-            <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Open" Command="{Binding OpenFileCommand}"/>
                     <MenuItem Header="_Connect..." IsEnabled="False"/>
@@ -36,66 +31,9 @@
                     <MenuItem Header="_XY plot" Command="{Binding AddPlotCommand}"/>
                 </MenuItem>
             </Menu>
-        <Grid DockPanel.Dock="Right">
-            <ListView x:Name="lvSeriesList" Grid.Row="2"
-                      ItemsSource="{Binding RenderableSeries}"
-                      DataContext="{Binding}"
-                      DockPanel.Dock="Right"
-                      Visibility="{Binding HasPlots, Converter={StaticResource BoolToVisibilityConverter}}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Height="50" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <TextBox Grid.Row="0" Grid.Column="0" x:Name="tbChartName" Text="{Binding Tag}"/>
-                            <Button Grid.Row="0" Grid.Column="1"
-                                    Command="{Binding ElementName=lvSeriesList, Path=DataContext.RemoveSeriesCommand}"
-                                    CommandParameter="{Binding}" 
-                                    MinWidth="25"
-                                    Content="X"
-                                    HorizontalAlignment="Right"/>
-                            <Rectangle Fill="{Binding SeriesColor, Converter={StaticResource ColorBrushConverter}}" Grid.Row="1" Grid.Column="0"/>
-                            <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
-        
-        <s:SciChartSurface Grid.Row="0"
-                           Grid.RowSpan="2"
-                           Grid.Column="0"
-                           Panel.ZIndex="0"
-                           DockPanel.Dock="Left"
-                           RenderableSeries="{Binding RenderableSeries}"  
-                           ChartTitle="{Binding ChartTitle}">
-            <s:SciChartSurface.XAxis>
-                <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
-            </s:SciChartSurface.XAxis>
-            <s:SciChartSurface.YAxis>
-                <s:NumericAxis AxisTitle="{Binding YAxisTitle}"/>
-            </s:SciChartSurface.YAxis>
-
-            <s:SciChartSurface.ChartModifier>
-                <!-- Ensure ModifierGroup DataContext is the MainViewModel (not the ChartViewModel)-->
-                <s:ModifierGroup>
-                    <s:RubberBandXyZoomModifier IsEnabled="False"  />
-                    <s:ZoomPanModifier IsEnabled="True" ClipModeX="None" />
-                    <s:ZoomExtentsModifier/>
-                    <s:MouseWheelZoomModifier x:Name="mouseWheelZoomModifier" />
-                    <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick" />
-                </s:ModifierGroup>
-            </s:SciChartSurface.ChartModifier>
-
-        </s:SciChartSurface>
-        
-        
-        
+        <TabControl ItemsSource="{Binding Tabs}"
+                    SelectedIndex="{Binding SelectedTabIndex}"
+                    ContentTemplateSelector="{StaticResource PlotDataTemplateSelector}">
+        </TabControl>
     </DockPanel>
 </Window>

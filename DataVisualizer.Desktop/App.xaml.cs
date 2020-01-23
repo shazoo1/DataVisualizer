@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 using CommonServiceLocator;
+using DataVisualizer.Desktop.Enums;
+using DataVisualizer.Desktop.ViewModel;
 using DataVisualizer.Persistence;
 using Prism.Ioc;
 using Prism.Unity;
@@ -20,6 +22,5 @@ namespace DataVisualizer.Desktop
     {
         // A workaround for repeating 'random' values
         public static Random RANDOM = new Random();
-
     }
 }
