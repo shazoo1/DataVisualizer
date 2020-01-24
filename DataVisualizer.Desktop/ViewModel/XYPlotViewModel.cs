@@ -19,7 +19,7 @@ namespace DataVisualizer.Desktop.ViewModel
     {
         #region Bindables
 
-        private string _chartTitle = "Hello SciChart World!";
+        private string _chartTitle = "XY Graph";
         public string ChartTitle
         {
             get { return _chartTitle; }
@@ -58,13 +58,6 @@ namespace DataVisualizer.Desktop.ViewModel
             get { return _addPlotCommand; }
             private set { _addPlotCommand = value; }
         }
-
-        private ICommand _removeSeriesCommand;
-        public ICommand RemoveSeriesCommand
-        {
-            get { return _removeSeriesCommand; }
-            private set { _removeSeriesCommand = value; }
-        }
         #endregion
 
         public XYPlotViewModel(IContext context, IDialogService dialogService, IValidationService validationService)
@@ -72,6 +65,5 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             VMType = Enums.VMType.XYPlotViewModel;
         }
-
     }
 }

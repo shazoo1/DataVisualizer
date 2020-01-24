@@ -135,12 +135,6 @@ namespace DataVisualizer.Desktop.ViewModel
             private set { _addPlotCommand = value; }
         }
 
-        private ICommand _removeSeriesCommand;
-        public ICommand RemoveSeriesCommand
-        {
-            get { return _removeSeriesCommand; }
-            private set { _removeSeriesCommand = value; }
-        }
         #endregion
 
         private IValidationService _validationService;
@@ -153,7 +147,6 @@ namespace DataVisualizer.Desktop.ViewModel
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
             AddPlotCommand = new RelayCommand(new Action<object>(AddXYPlot));
-            RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
             Tabs = new ObservableCollection<BasePlotViewModel>();
 
             _series = new ObservableCollection<IRenderableSeries>();
@@ -249,12 +242,7 @@ namespace DataVisualizer.Desktop.ViewModel
             series.SeriesColor = GetRandomColor();
             return series;
         }
-
-        public void RemoveSeries(object series)
-        {
-            RenderableSeries.Remove((IRenderableSeries)series);
-            HasPlots = _series.Count > 0;
-        }
+        
 
         private Color GetRandomColor()
         {

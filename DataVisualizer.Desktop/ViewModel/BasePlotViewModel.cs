@@ -1,5 +1,6 @@
 ﻿using Abt.Controls.SciChart.Visuals.RenderableSeries;
 using DataVisualizer.Desktop.Enums;
+using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
@@ -9,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
@@ -41,6 +43,13 @@ namespace DataVisualizer.Desktop.ViewModel
                 RaisePropertyChanged("RenderableSeries");
             }
         }
+
+        private ICommand _removeSeriesCommand;
+        public virtual ICommand RemoveSeriesCommand
+        {
+            get { return _removeSeriesCommand; }
+            private set { _removeSeriesCommand = value; }
+        }
         #endregion
 
         public BasePlotViewModel(IContext context, IDialogService dialogService, IValidationService validationService)
@@ -49,7 +58,14 @@ namespace DataVisualizer.Desktop.ViewModel
             _validationService = validationService;
             _dialogService = dialogService;
 
+            RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
             RenderableSeries = new ObservableCollection<IRenderableSeries>();
+        }
+
+        public void RemoveSeries(object series)
+        {
+            RenderableSeries.Remove((IRenderableSeries)series);
+            //HasPlots = _series.Count > 0;
         }
     }
 }
