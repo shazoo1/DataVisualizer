@@ -16,6 +16,11 @@ using Abt.Controls.SciChart.Visuals.RenderableSeries;
 using Abt.Controls.SciChart.Model.DataSeries;
 using Abt.Controls.SciChart.Model;
 using DataVisualizer.Desktop.Enums;
+using Dragablz;
+using System.Diagnostics;
+using Dragablz.Dockablz;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
@@ -23,6 +28,8 @@ namespace DataVisualizer.Desktop.ViewModel
     {
 
         #region Bindings
+        private IInterTabClient _interTabClient;
+        public IInterTabClient InterTabClient { get => _interTabClient; }
 
         private ObservableCollection<BasePlotViewModel> _tabs;
         public ObservableCollection<BasePlotViewModel> Tabs
@@ -135,6 +142,33 @@ namespace DataVisualizer.Desktop.ViewModel
             private set { _addPlotCommand = value; }
         }
 
+        public ICommand _addPieChartCommand;
+        public ICommand AddPieChartCommand
+        {
+            get => _addPieChartCommand;
+            private set { _addPieChartCommand = value; }
+        }
+
+        //This has been added in tutorials
+        private readonly object _partition;
+        public object Partition
+        {
+            get { return _partition; }
+        }
+
+        private readonly ObservableCollection<HeaderedItemViewModel> _floatingItems;
+        public ObservableCollection<HeaderedItemViewModel> FloatingItems
+        {
+            get { return _floatingItems; }
+        }
+
+        private readonly ObservableCollection<HeaderedItemViewModel> _toolItems
+            = new ObservableCollection<HeaderedItemViewModel>();
+        public ObservableCollection<HeaderedItemViewModel> ToolItems
+        {
+            get { return _toolItems; }
+        }
+
         #endregion
 
         private IValidationService _validationService;
@@ -147,6 +181,7 @@ namespace DataVisualizer.Desktop.ViewModel
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
             AddPlotCommand = new RelayCommand(new Action<object>(AddXYPlot));
+            AddPieChartCommand = new RelayCommand(new Action<object>(AddPieChart));
             Tabs = new ObservableCollection<BasePlotViewModel>();
 
             _series = new ObservableCollection<IRenderableSeries>();
@@ -155,6 +190,7 @@ namespace DataVisualizer.Desktop.ViewModel
             //TODO :: dinjection
             _dialogService = new DialogService();
             _validationService = new ValidationService(_context);
+            _interTabClient = new InterTabClient();
 
             //Hardcode here
             
@@ -208,6 +244,52 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
+        //TODO :: Move to PieChartViewModel
+        private void AddPieChart(object obj)
+        {
+            var selectionModel = new SelectPieChartDataViewModel(_context, _dialogService, _validationService);
+            var selection = _dialogService.SelectPieChartData(selectionModel).Value;
+            var chartData = new ObservableCollection<KeyValuePair<string, double>>();
+            var model = new PieChartViewModel(_context, _dialogService, _validationService);
+            if (_validationService.ValidateCategorical(selection.categories))
+            {
+                var categories = _context.GetTextualColumnByIndex(selection.categories);
+                if (selection.values != -1 && _validationService.ValidateNumerical(selection.values))
+                {
+                    var values = _context.GetNumericalColumnByIndex(selection.values);
+                    model.Segments = (ObservableCollection<KeyValuePair<string, double>>)
+                        BuildPieChartSegments(categories, values);
+                }
+                else
+                {
+                    model.Segments = (ObservableCollection<KeyValuePair<string, double>>)
+                       BuildPieChartSegments(categories);
+                }
+            }
+            GetOrAddNewTab<PieChartViewModel>(model);
+        }
+
+        public ObservableCollection<KeyValuePair<string, double>> BuildPieChartSegments(string[] categories)
+        {
+            var aggregation = categories.GroupBy(x => x)
+                .Select(val => new Tuple<string, double>(val.Key, val.Count()));
+            var preparedCategories = aggregation.Select(x => x.Item1).ToArray();
+            var preparedValues = aggregation.Select(x => x.Item2).ToArray();
+
+            return BuildPieChartSegments(preparedCategories, preparedValues);
+        }
+
+        public ObservableCollection<KeyValuePair<string, double>> BuildPieChartSegments(string[] categories, double[] values)
+        {
+            var result = new ObservableCollection<KeyValuePair<string, double>>();
+            for (int i = 0; i < categories.Length; i++)
+            {
+                result.Add(new KeyValuePair<string, double>(categories[i], values[i]));
+            }
+            return result;
+        }
+
+        //TODO :: Move to XYPlotViewModel
         public BaseRenderableSeries BuildXYChart(double[] xValues, double[] yValues, ChartType type)
         {
             var newSeriesData = new XyDataSeries<double, double>();
@@ -251,6 +333,8 @@ namespace DataVisualizer.Desktop.ViewModel
             return randomColor;
         }
 
+
+        #region Tab Operations
         //Create new tab, containing the needed Surface
         public int GetOrAddNewTab<T>(BasePlotViewModel model) where T : BasePlotViewModel
         {
@@ -261,5 +345,47 @@ namespace DataVisualizer.Desktop.ViewModel
             }
             return model.TabIndex;
         }
+
+        public ItemActionCallback ClosingTabItemHandler
+        {
+            get { return ClosingTabItemHandlerImpl; }
+        }
+
+        /// <summary>
+        /// Callback to handle tab closing.
+        /// </summary>        
+        private static void ClosingTabItemHandlerImpl(ItemActionCallbackArgs<TabablzControl> args)
+        {
+            //in here you can dispose stuff or cancel the close
+
+            //here's your view model:
+            var viewModel = args.DragablzItem.DataContext as HeaderedItemViewModel;
+            Debug.Assert(viewModel != null);
+
+            //here's how you can cancel stuff:
+            //args.Cancel(); 
+        }
+
+        public ClosingFloatingItemCallback ClosingFloatingItemHandler
+        {
+            get { return ClosingFloatingItemHandlerImpl; }
+        }
+
+        /// <summary>
+        /// Callback to handle floating toolbar/MDI window closing.
+        /// </summary>        
+        private static void ClosingFloatingItemHandlerImpl(ItemActionCallbackArgs<Layout> args)
+        {
+            //in here you can dispose stuff or cancel the close
+
+            //here's your view model: 
+            var disposable = args.DragablzItem.DataContext as IDisposable;
+            if (disposable != null)
+                disposable.Dispose();
+
+            //here's how you can cancel stuff:
+            //args.Cancel(); 
+        }
+        #endregion
     }
 }

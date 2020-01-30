@@ -22,6 +22,17 @@ namespace DataVisualizer.Desktop.ViewModel
         internal VMType VMType;
 
         #region Bindables
+        private string _chartTitle = "XY Graph";
+        public string ChartTitle
+        {
+            get { return _chartTitle; }
+            set
+            {
+                _chartTitle = value;
+                RaisePropertyChanged("ChartTitle");
+            }
+        }
+
         private int _tabIndex;
         public int TabIndex
         {

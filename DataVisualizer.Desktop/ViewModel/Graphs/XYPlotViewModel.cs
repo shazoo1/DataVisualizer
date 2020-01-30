@@ -19,17 +19,6 @@ namespace DataVisualizer.Desktop.ViewModel
     {
         #region Bindables
 
-        private string _chartTitle = "XY Graph";
-        public string ChartTitle
-        {
-            get { return _chartTitle; }
-            set
-            {
-                _chartTitle = value;
-                RaisePropertyChanged("ChartTitle");
-            }
-        }
-
         private string _xAxisTitle = "XAxis";
         public string XAxisTitle
         {

@@ -7,32 +7,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using DataVisualizer.Desktop.Helpers;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
     public class SelectPieChartDataViewModel : SelectDataViewModel
     {
         #region Bindings
-        private bool _categoryValueSelected;
-        public bool CategoryValueSelected
+        public int[] CategoryColumns { get; set; }
+        public int[] ValueColumns { get; set; }
+        private bool _valueSelected;
+        public bool ValueSelected
         {
-            get => _categoryValueSelected;
+            get => _valueSelected;
             set
             {
-                _categoryValueSelected = value;
-                RaisePropertyChanged("CategoryValueSelected");
+                //Do nothing if the value doesn't change
+                if (ValueSelected != value)
+                {
+                    _valueSelected = value;
+                    RaisePropertyChanged("ValueSelected");
+                    SwitchSelection("value");
+                }
             }
         }
 
-        private bool _onlyCategorySelected;
-        public bool OnlyCategorySelected
+        private bool _categorySelected;
+        public bool CategorySelected
         {
-            get => _onlyCategorySelected;
+            get => _categorySelected;
             set
             {
-                _onlyCategorySelected = value;
-                IsMultipleRange = true;
-                RaisePropertyChanged("OnlyCategorySelected");
+                //Do nothing if the value doesn't change
+                if (CategorySelected != value)
+                {
+                    _categorySelected = value;
+                    RaisePropertyChanged("CategorySelected");
+                    SwitchSelection("category");
+                }
             }
         }
         #endregion
@@ -45,7 +58,62 @@ namespace DataVisualizer.Desktop.ViewModel
         public SelectPieChartDataViewModel(IContext context, IDialogService dialogService, IValidationService validationService) 
             : base(context, dialogService, validationService)
         {
+            IsMultipleRange = false;
+            CategorySelected = true;
+        }
 
+        protected override void OnOkClicked(object obj)
+        {
+            if (SelectedRanges.Count() == 0)
+            {
+                Error = true;
+                ErrorText += "No data selected.";
+            }
+            if (CategorySelected)
+            {
+                CategoryColumns = SelectedRanges;
+                ValueColumns = new int[] { -1 };
+            }
+            if (ValueSelected)
+            {
+                ValueColumns = SelectedRanges;
+            }
+
+            // No need to validate, if the error has already occured
+            if (!Error)
+                Validate();
+
+            base.OnOkClicked(obj);
+        }
+
+        private void Validate()
+        {
+            if (SelectedRanges.Length == 1)
+            {
+                if (!_validationService.ValidateCategorical(SelectedRanges[0]))
+                {
+                    Error = true;
+                    ErrorText += "The given data has too many categories for the Pie chart.";
+                }
+            }
+        }
+
+        private void SwitchSelection(string selectionName)
+        {
+            switch (selectionName) {
+                case "category":
+                    {
+                        ValueColumns = SelectedRanges;
+                        SelectedRanges = CategoryColumns;
+                        break;
+                    }
+                case "value":
+                    {
+                        CategoryColumns = SelectedRanges;
+                        SelectedRanges = ValueColumns;
+                        break;
+                    }
+            }
         }
     }
 }

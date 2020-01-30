@@ -8,6 +8,7 @@ namespace DataVisualizer.Desktop.Enums
 {
     enum VMType
     {
-        XYPlotViewModel
+        XYPlotViewModel,
+        PieChartViewModel
     }
 }

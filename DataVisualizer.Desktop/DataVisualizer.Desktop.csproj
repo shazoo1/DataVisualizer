@@ -56,6 +56,9 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
+    </Reference>
     <Reference Include="Prism, Version=7.2.0.1422, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.2.0.1422\lib\net45\Prism.dll</HintPath>
     </Reference>
@@ -77,6 +80,9 @@
     </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Controls.DataVisualization.Toolkit.4.0.0.0\lib\net40-Client\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.7.2.0.1422\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -129,6 +135,8 @@
     <Compile Include="Helpers\ColorBrushConverter.cs" />
     <Compile Include="Helpers\DataSelectionTableBehavior.cs" />
     <Compile Include="Helpers\DataValidator.cs" />
+    <Compile Include="Helpers\InterTabClient.cs" />
+    <Compile Include="Helpers\NewGraphTabFactory.cs" />
     <Compile Include="Helpers\ObservableQueue.cs" />
     <Compile Include="Helpers\PlotDataTemplateSelector.cs" />
     <Compile Include="Helpers\RangeTypesConverter.cs" />
@@ -143,12 +151,14 @@
     <Compile Include="ViewModel\BasePlotViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\DataPreviewViewModel.cs" />
+    <Compile Include="ViewModel\Graphs\PieChartViewModel.cs" />
     <Compile Include="ViewModel\Interfaces\IDataPreviewViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SelectDataViewModel.cs" />
     <Compile Include="ViewModel\SelectXYPlotDataViewModel.cs" />
     <Compile Include="ViewModel\SelectPieChartDataViewModel.cs" />
-    <Compile Include="ViewModel\XYPlotViewModel.cs" />
+    <Compile Include="ViewModel\TabHostViewModel.cs" />
+    <Compile Include="ViewModel\Graphs\XYPlotViewModel.cs" />
     <Compile Include="Views\DataPreviewWindow.xaml.cs">
       <DependentUpon>DataPreviewWindow.xaml</DependentUpon>
     </Compile>
@@ -159,14 +169,17 @@
     <Compile Include="Views\SelectPieChartDataWindow.xaml.cs">
       <DependentUpon>SelectPieChartDataWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TabHostWindow.xaml.cs">
+      <DependentUpon>TabHostWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\TableColumnSelectorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Templates\GraphTabTemplates.xaml">
+    <Resource Include="Templates\XYGraphTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -179,6 +192,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Templates\PieChartTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Templates\SeriesListItemTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -196,6 +213,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Styles\ColumnSelectionTableStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TabHostWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

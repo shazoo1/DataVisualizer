@@ -13,7 +13,7 @@ namespace DavaVisualizer.Desktop.Services.Contracts
     {
         string OpenFile();
         (int x, int[] y, ChartType type)? SelectXYPlotData(SelectXYPlotDataViewModel model);
-        (string[] categories, double[] values)? SelectPieChartData(SelectPieChartDataViewModel model);
+        (int categories, int values)? SelectPieChartData(SelectPieChartDataViewModel model);
         void ShowWarning(string text);
         void ShowError(Exception e);
         bool PreviewFile(DataPreviewViewModel model, ref IContext context);

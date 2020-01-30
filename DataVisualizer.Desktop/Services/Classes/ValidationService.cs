@@ -10,6 +10,9 @@ namespace DataVisualizer.Desktop.Services.Classes
 {
     internal class ValidationService : IValidationService
     {
+        //Constants
+        private const int MAXPIECHARTSEGMENTS = 15;
+
         private IContext _context;
 
         public ValidationService(IContext context)
@@ -20,7 +23,19 @@ namespace DataVisualizer.Desktop.Services.Classes
         #region Validation itself
         public bool ValidateCategorical(int column)
         {
-            throw new NotImplementedException();
+            // It will be hard to see more than 15 values
+            // However, the maximal number of elements can be changed
+            // TODO :: Probably move to settings
+            var data = _context.GetTextualColumnByIndex(column);
+            int distinctCategoriesCount = data.Distinct().Count();
+            if (data.Length > 0)
+            {
+                if (distinctCategoriesCount <= MAXPIECHARTSEGMENTS)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         public bool ValidateCategorical(int[] column)
         {
@@ -28,8 +43,11 @@ namespace DataVisualizer.Desktop.Services.Classes
         }
         public bool ValidateCategorical(string[] values)
         {
-            // TODO :: Implement
-            return true;
+            // It will be hard to see more than 15 values
+            // However, the maximal number of elements can be changed
+            // TODO :: Probably move to settings
+
+            return values.Distinct().Count() <= MAXPIECHARTSEGMENTS;
         }
 
         public bool ValidateNumerical(int column)

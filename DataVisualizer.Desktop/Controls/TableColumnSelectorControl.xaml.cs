@@ -47,7 +47,14 @@ namespace DataVisualizer.Desktop.Controls
         public bool AllowMultiple
         {
             get => (bool)GetValue(AllowMultipleProperty);
-            set => SetValue(AllowMultipleProperty, value);
+            set
+            {
+                SetValue(AllowMultipleProperty, value);
+                if (!value)
+                {
+                    LeaveOneColumnSelected();
+                }
+            }
         }
 
         public static readonly DependencyProperty SelectedColumnsProperty =
@@ -212,15 +219,39 @@ namespace DataVisualizer.Desktop.Controls
             control.ClearSelection();
             if (e.NewValue != null)
             {
-                foreach (int index in selectedIndices)
-                {
-                    KeyValuePair<Rectangle, bool> selectedRect = control._rectangles.Where(x => ((Rectangle)x.Key).GetValue(Grid.ColumnProperty).Equals(index))
-                        .FirstOrDefault();
-                    selectedRect.Key.Fill = control._columnSelected;
-                    control._rectangles[selectedRect.Key] = true;
-                }
-                control.SelectedColumns = selectedIndices;
+                HighlightColumns(control, selectedIndices);
             }
+        }
+
+        private void LeaveOneColumnSelected()
+        {
+            if (SelectedColumns.Length > 0)
+            {
+                var selectedIndex = SelectedColumns.First();
+                ClearSelection();
+                var rect = _rectangles.Where(x => ((Rectangle)x.Key)
+                    .GetValue(Grid.ColumnProperty)
+                    .Equals(selectedIndex))
+                    .First();
+                rect.Key.Fill = _columnSelected;
+                _rectangles[rect.Key] = true;
+                SelectedColumns = new int[] { selectedIndex };
+            }
+        }
+
+        private static void HighlightColumns(TableColumnSelectorControl control, int[] selectedIndices)
+        {
+            foreach (int index in selectedIndices)
+            {
+                KeyValuePair<Rectangle, bool> selectedRect = control._rectangles
+                    .Where(x => ((Rectangle)x.Key)
+                        .GetValue(Grid.ColumnProperty)
+                        .Equals(index))
+                    .FirstOrDefault();
+                selectedRect.Key.Fill = control._columnSelected;
+                control._rectangles[selectedRect.Key] = true;
+            }
+            control.SelectedColumns = selectedIndices;
         }
     }
 }

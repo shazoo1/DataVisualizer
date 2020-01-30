@@ -1,0 +1,17 @@
+﻿<Window x:Class="DataVisualizer.Desktop.Views.TabHostWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:model="clr-namespace:DataVisualizer.Desktop.ViewModel"
+        Title="Basic Example Defining Tab Content in XAML" Height="300" Width="300"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance model:TabHostViewModel, IsDesignTimeCreatable=False}">
+    <dragablz:TabablzControl Margin="8 8 8 8"
+                             x:Name="TabablzControl">
+        <dragablz:TabablzControl.InterTabController>
+            <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" Partition="2AE89D18-F236-4D20-9605-6C03319038E6" />
+        </dragablz:TabablzControl.InterTabController>
+    </dragablz:TabablzControl>
+</Window>

@@ -2,12 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
                     xmlns:local="clr-namespace:DataVisualizer.Desktop"
-                    xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers">
+                    xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers;assembly=DataVisualizer.Desktop"
+                    xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit">
+
     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    <DataTemplate x:Key="XYGraphTemplate" DataType="x:Type ViewModels.XYPlotViewModel">
-        <DataTemplate.Resources>
+    <!--Pie Chart template-->
+    <DataTemplate x:Key="PieChartTemplate" DataType="x:Type ViewModels.PieChartViewModel">
+        <!--<DataTemplate.Resources>
             <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
-        </DataTemplate.Resources>
+        </DataTemplate.Resources>-->
         <DockPanel>
             <Grid DockPanel.Dock="Right">
                 <ListView x:Name="lvSeriesList" Grid.Row="2"
@@ -33,40 +36,21 @@
                                     MinWidth="25"
                                     Content="X"
                                     HorizontalAlignment="Right"/>
-                                <Rectangle Fill="{Binding SeriesColor,
+                                <!--<Rectangle Fill="{Binding SeriesColor,
                                     Converter={StaticResource ColorBrushConverter}}" 
-                                    Grid.Row="1" Grid.Column="0"/>
+                                    Grid.Row="1" Grid.Column="0"/>-->
                                 <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </Grid>
-            <s:SciChartSurface Grid.Row="0"
-                           Grid.RowSpan="2"
-                           Grid.Column="0"
-                           Panel.ZIndex="0"
-                           DockPanel.Dock="Left"
-                           RenderableSeries="{Binding RenderableSeries}"  
-                           ChartTitle="{Binding ChartTitle}">
-                <s:SciChartSurface.XAxis>
-                    <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
-                </s:SciChartSurface.XAxis>
-                <s:SciChartSurface.YAxis>
-                    <s:NumericAxis AxisTitle="{Binding YAxisTitle}"/>
-                </s:SciChartSurface.YAxis>
-
-                <s:SciChartSurface.ChartModifier>
-                    <!-- Ensure ModifierGroup DataContext is the MainViewModel (not the ChartViewModel)-->
-                    <s:ModifierGroup>
-                        <s:RubberBandXyZoomModifier IsEnabled="False"  />
-                        <s:ZoomPanModifier IsEnabled="True" ClipModeX="None" />
-                        <s:ZoomExtentsModifier/>
-                        <s:MouseWheelZoomModifier x:Name="mouseWheelZoomModifier" />
-                        <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick" />
-                    </s:ModifierGroup>
-                </s:SciChartSurface.ChartModifier>
-            </s:SciChartSurface>
+            <chartingToolkit:Chart  Name="pieChart" Title="{Binding ChartTitle}" 
+                VerticalAlignment="Top" Margin="449,39,43,0" Height="262">
+                <chartingToolkit:PieSeries DependentValuePath="Value" 
+                    IndependentValuePath="Key" ItemsSource="{Binding Segments}" 
+                    IsSelectionEnabled="True" />
+            </chartingToolkit:Chart>
         </DockPanel>
     </DataTemplate>
 </ResourceDictionary>

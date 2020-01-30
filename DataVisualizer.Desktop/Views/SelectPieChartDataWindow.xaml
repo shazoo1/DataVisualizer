@@ -48,9 +48,9 @@
                 </Grid.ColumnDefinitions>
             </Grid>
             <RadioButton Content="Category + value"
-                         IsChecked="{Binding CategoryValueSelected}"/>
+                         IsChecked="{Binding ValueSelected}"/>
             <RadioButton Content="Only category"
-                         IsChecked="{Binding OnlyCategorySelected}"/>
+                         IsChecked="{Binding CategorySelected}"/>
         </StackPanel>
     </Grid>
 </Window>

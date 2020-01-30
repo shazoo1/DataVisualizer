@@ -1,39 +1,89 @@
 ﻿<Window x:Class="DataVisualizer.Desktop.MainWindow"
+        xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers;assembly="
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:local="clr-namespace:DataVisualizer.Desktop.ViewModel"
         xmlns:templates="clr-namespace:DataVisualizer.Desktop.Templates"
+        xmlns:local="clr-namespace:DataVisualizer.Desktop;assembly="
         mc:Ignorable="d"
-        xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers"
         xmlns:prsm="http://www.codeplex.com/prism"
         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
+        xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
+        xmlns:vm="clr-namespace:DataVisualizer.Desktop.ViewModel"
         Title="Data Visualizer" Height="550" Width="800">
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <ResourceDictionary x:Key="GraphTabTemplates" Source="Templates/GraphTabTemplates.xaml"/>
-        <local:MainViewModel x:Key="MainViewModel"/>
-        <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
-        <helpers:PlotDataTemplateSelector
-            x:Key="PlotDataTemplateSelector"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="Templates/XYGraphTemplate.xaml"/>
+                <ResourceDictionary Source="Templates/PieChartTemplate.xaml"/>-->
+                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <vm:MainViewModel x:Key="MainViewModel"/>
+            <DataTemplate DataType="{x:Type dragablz:HeaderedItemViewModel}">
+                <ContentControl Content="{Binding ChartTitle}" Margin="4 4 4 4" FontSize="14" />
+            </DataTemplate>
+            <dragablz:InterTabController x:Key="InterTabController" x:Shared="False" InterTabClient="{Binding InterTabClient}" Partition="2AE89D18-F236-4D20-9605-6C03319038E6" />
+            <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
+            <helpers:PlotDataTemplateSelector x:Key="PlotDataTemplateSelector"/>
+            <Style TargetType="{x:Type dragablz:TabablzControl}" x:Key="TabablzControlStyle">
+                <Setter Property="ItemsSource" Value="{Binding Tabs}" />
+                <Setter Property="ClosingItemCallback" Value="{Binding ClosingTabItemHandler}" />
+                <Setter Property="NewItemFactory" Value="{x:Static helpers:NewGraphTabFactory.Factory}"/>
+                <Setter Property="ShowDefaultAddButton" Value="False" />
+                <Setter Property="AdjacentHeaderItemOffset" Value="-10" />
+                <Setter Property="ShowDefaultCloseButton" Value="True" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource TrapezoidDragableTabItemStyle}" />
+                <Setter Property="HeaderMemberPath" Value="ChartTitle" />
+                <Setter Property="InterTabController" Value="{StaticResource InterTabController}" />
+                <Setter Property="Margin" Value="0 8 0 0" />
+                <Setter Property="ContentTemplateSelector" Value="{StaticResource PlotDataTemplateSelector}"/>
+                <Setter Property="SelectedIndex" Value="{Binding SelectedTabIndex}" />
+                <!--For future icon
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(dockablz:Layout.IsTopLeftItem)}" Value="True">
+                    <Setter Property="HeaderPrefixContent" Value="{StaticResource WindowIcon}" />
+                </DataTrigger>
+            </Style.Triggers>-->
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
     <DockPanel DataContext="{StaticResource MainViewModel}">
         <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Open" Command="{Binding OpenFileCommand}"/>
-                    <MenuItem Header="_Connect..." IsEnabled="False"/>
-                    <Separator />
-                    <MenuItem Header="_Exit" />
-                </MenuItem>
-                <MenuItem Header="_Add" IsEnabled="{Binding IsDataSourceConnected}">
-                    <MenuItem Header="_XY plot" Command="{Binding AddPlotCommand}"/>
-                </MenuItem>
-            </Menu>
-        <TabControl ItemsSource="{Binding Tabs}"
-                    SelectedIndex="{Binding SelectedTabIndex}"
-                    ContentTemplateSelector="{StaticResource PlotDataTemplateSelector}">
-        </TabControl>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Command="{Binding OpenFileCommand}"/>
+                <MenuItem Header="_Connect..." IsEnabled="False"/>
+                <Separator />
+                <MenuItem Header="_Exit" />
+            </MenuItem>
+            <MenuItem Header="_Add" IsEnabled="{Binding IsDataSourceConnected}">
+                <MenuItem Header="_XY plot" Command="{Binding AddPlotCommand}"/>
+                <MenuItem Header="_PieChart" Command="{Binding AddPieChartCommand}"/>
+            </MenuItem>
+        </Menu>
+        <dockablz:Layout Partition="2AE89D18-F236-4D20-9605-6C03319038E6" Name="RootLayout"
+                     FloatingItemsSource="{Binding ToolItems}"
+                     FloatingItemHeaderMemberPath="ChartTitle"
+                     IsFloatDropZoneEnabled="True"
+                     ClosingFloatingItemCallback="{Binding ClosingFloatingItemHandler}"
+                     FloatingItemsContainerMargin="0 2 0 0">
+            <dockablz:Layout.BranchTemplate>
+                <DataTemplate>
+                    <dragablz:TabablzControl Style="{StaticResource TabablzControlStyle}">
+                        <dragablz:TabablzControl.InterTabController>
+                            <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" Partition="2AE89D18-F236-4D20-9605-6C03319038E6" />
+                        </dragablz:TabablzControl.InterTabController>
+                    </dragablz:TabablzControl>
+                </DataTemplate>
+            </dockablz:Layout.BranchTemplate>
+            <dragablz:TabablzControl Style="{StaticResource TabablzControlStyle}">
+                    <dragablz:TabablzControl.InterTabController>
+                    <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" Partition="2AE89D18-F236-4D20-9605-6C03319038E6"></dragablz:InterTabController>
+                    </dragablz:TabablzControl.InterTabController>
+                </dragablz:TabablzControl>
+        </dockablz:Layout>
     </DockPanel>
 </Window>

@@ -68,7 +68,7 @@ namespace DavaVisualizer.Desktop.Services.Classes
             return null;
         }
 
-        public (string[] categories, double[] values)? SelectPieChartData(SelectPieChartDataViewModel model)
+        public (int categories, int values)? SelectPieChartData(SelectPieChartDataViewModel model)
         {
             var selectionWindow = new SelectPieChartDataWindow();
             selectionWindow.DataContext = model;
@@ -83,7 +83,8 @@ namespace DavaVisualizer.Desktop.Services.Classes
             };
             if (selectionWindow.ShowDialog() == true)
             {
-                
+                var values = (model.CategoryColumns.FirstOrDefault(), model.ValueColumns.FirstOrDefault());
+                return values;
             }
             return null;
         }
