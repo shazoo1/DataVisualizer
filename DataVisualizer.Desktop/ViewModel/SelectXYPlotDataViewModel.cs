@@ -30,7 +30,6 @@ namespace DataVisualizer.Desktop.ViewModel
             private set { _chartTypes = value; }
         }
 
-        // TODO :: Enum instead
         private ChartType _chartType;
         public ChartType ChartType
         {
@@ -48,12 +47,15 @@ namespace DataVisualizer.Desktop.ViewModel
             get => _YAxisSelected;
             set
             {
-                _YAxisSelected = value;
-                if (value)
+                if (value != _YAxisSelected)
                 {
-                    OnAxisChanged("y");
+                    _YAxisSelected = value;
+                    if (value)
+                    {
+                        OnAxisChanged("y");
+                    }
+                    RaisePropertyChanged("YAxisSelected");
                 }
-                RaisePropertyChanged("YAxisSelected");
             }
         }
 
@@ -63,12 +65,15 @@ namespace DataVisualizer.Desktop.ViewModel
             get => _XAxisSelected;
             set
             {
-                _XAxisSelected = value;
-                if (value)
+                if (value != _XAxisSelected)
                 {
-                    OnAxisChanged("x");
+                    _XAxisSelected = value;
+                    if (value)
+                    {
+                        OnAxisChanged("x");
+                    }
+                    RaisePropertyChanged("XAxisSelected");
                 }
-                RaisePropertyChanged("XAxisSelected");
             }
         }
         private ObservableCollection<IRenderableSeries> _renderableSeries = new ObservableCollection<IRenderableSeries>();

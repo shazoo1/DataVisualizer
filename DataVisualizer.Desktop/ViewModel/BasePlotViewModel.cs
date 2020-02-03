@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
@@ -22,7 +23,13 @@ namespace DataVisualizer.Desktop.ViewModel
         internal VMType VMType;
 
         #region Bindables
-        private string _chartTitle = "XY Graph";
+        private bool _hasPlots;
+        public bool HasPlots
+        {
+            get => _hasPlots;
+            set => _hasPlots = value;
+        }
+        private string _chartTitle;
         public string ChartTitle
         {
             get { return _chartTitle; }
@@ -54,6 +61,12 @@ namespace DataVisualizer.Desktop.ViewModel
                 RaisePropertyChanged("RenderableSeries");
             }
         }
+        private ICommand _addSeriesCommand;
+        public ICommand AddSeriesCommand
+        {
+            get => _addSeriesCommand;
+            private set => _addSeriesCommand = value;
+        }
 
         private ICommand _removeSeriesCommand;
         public virtual ICommand RemoveSeriesCommand
@@ -70,13 +83,27 @@ namespace DataVisualizer.Desktop.ViewModel
             _dialogService = dialogService;
 
             RemoveSeriesCommand = new RelayCommand(new Action<object>(RemoveSeries));
+            AddSeriesCommand = new RelayCommand(new Action<object>(AddSeries));
             RenderableSeries = new ObservableCollection<IRenderableSeries>();
         }
 
         public void RemoveSeries(object series)
         {
             RenderableSeries.Remove((IRenderableSeries)series);
-            //HasPlots = _series.Count > 0;
+            HasPlots = _series.Count > 0;
+        }
+
+        //Every PlotViewModel should override this method
+        protected virtual void AddSeries(object obj)
+        {
+            HasPlots = _series.Count > 0;
+        }
+
+        protected Color GetRandomColor()
+        {
+            Random rnd = new Random();
+            Color randomColor = Color.FromScRgb(1, (float)App.RANDOM.NextDouble(), (float)App.RANDOM.NextDouble(), (float)App.RANDOM.NextDouble());
+            return randomColor;
         }
     }
 }

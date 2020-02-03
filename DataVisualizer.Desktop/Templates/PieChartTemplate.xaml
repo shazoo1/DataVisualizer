@@ -2,55 +2,81 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
                     xmlns:local="clr-namespace:DataVisualizer.Desktop"
-                    xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers;assembly=DataVisualizer.Desktop"
+                    xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers;assembly="
                     xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit">
 
     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <!--Pie Chart template-->
     <DataTemplate x:Key="PieChartTemplate" DataType="x:Type ViewModels.PieChartViewModel">
-        <!--<DataTemplate.Resources>
+        <DataTemplate.Resources>
             <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
-        </DataTemplate.Resources>-->
-        <DockPanel>
-            <Grid DockPanel.Dock="Right">
-                <ListView x:Name="lvSeriesList" Grid.Row="2"
+        </DataTemplate.Resources>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <chartingToolkit:Chart  Name="pieChart" Title="{Binding ChartTitle}" 
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.RowSpan="3"
+                Grid.ColumnSpan="2">
+                <chartingToolkit:PieSeries DependentValuePath="Value" 
+                    IndependentValuePath="Key" ItemsSource="{Binding Segments}" 
+                    IsSelectionEnabled="True" />
+            </chartingToolkit:Chart>
+            <!--<Expander ExpandDirection="Left"
+                      Grid.Column="1"
+                      Grid.Row="1"
+                      Grid.RowSpan="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Row="0"
+                             Text="{Binding ChartTitle,UpdateSourceTrigger=PropertyChanged}"
+                             HorizontalAlignment="Stretch"
+                             TextAlignment="Center"/>
+                    <ListView x:Name="lvSeriesList" Grid.Row="1"
                       ItemsSource="{Binding RenderableSeries}"
-                      DataContext="{Binding}"
-                      DockPanel.Dock="Right"
-                      Visibility="{Binding HasPlots, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Height="50" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" Grid.Column="0" x:Name="tbChartName" Text="{Binding Tag}"/>
-                                <Button Grid.Row="0" Grid.Column="1"
+                      DataContext="{Binding}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="50" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="tbChartName" Text="{Binding Tag}"/>
+                                    <Button Grid.Row="0" Grid.Column="1"
                                     Command="{Binding ElementName=lvSeriesList, Path=DataContext.RemoveSeriesCommand}"
                                     CommandParameter="{Binding}" 
                                     MinWidth="25"
                                     Content="X"
                                     HorizontalAlignment="Right"/>
-                                <!--<Rectangle Fill="{Binding SeriesColor,
+                                    <Rectangle Fill="{Binding SeriesColor,
                                     Converter={StaticResource ColorBrushConverter}}" 
-                                    Grid.Row="1" Grid.Column="0"/>-->
-                                <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
-            <chartingToolkit:Chart  Name="pieChart" Title="{Binding ChartTitle}" 
-                VerticalAlignment="Top" Margin="449,39,43,0" Height="262">
-                <chartingToolkit:PieSeries DependentValuePath="Value" 
-                    IndependentValuePath="Key" ItemsSource="{Binding Segments}" 
-                    IsSelectionEnabled="True" />
-            </chartingToolkit:Chart>
-        </DockPanel>
+                                    Grid.Row="1" Grid.Column="0"/>
+                                    <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Grid.Row="2"
+                    Command="{Binding AddSeriesCommand}">Add plot</Button>
+                </Grid>
+            </Expander>-->
+        </Grid>
     </DataTemplate>
 </ResourceDictionary>

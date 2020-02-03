@@ -54,5 +54,58 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             VMType = Enums.VMType.XYPlotViewModel;
         }
+
+        protected override void AddSeries(object obj)
+        {
+            var selectionModel = new SelectXYPlotDataViewModel(_context, _dialogService, _validationService);
+            var selection = _dialogService.SelectXYPlotData(selectionModel);
+            if (selection != null)
+            {
+                //There must be only one range for x
+                var xValues = _context.GetNumericalColumnByIndex(selection.Value.x);
+
+                foreach (int yColumnIndex in selection.Value.y)
+                {
+                    var yValues = _context.GetNumericalColumnByIndex(yColumnIndex);
+                    RenderableSeries.Add(BuildXYChart(xValues, yValues, selection.Value.type));
+                }
+            }
+            base.AddSeries(obj);
+        }
+
+        public BaseRenderableSeries BuildXYChart(double[] xValues, double[] yValues, ChartType type)
+        {
+            var newSeriesData = new XyDataSeries<double, double>();
+            BaseRenderableSeries series = null;
+            switch (type)
+            {
+                case ChartType.Line:
+                    {
+                        series = new FastLineRenderableSeries();
+                        break;
+                    }
+                case ChartType.Column:
+                    {
+                        newSeriesData.AcceptsUnsortedData = true;
+                        series = new FastColumnRenderableSeries();
+                        break;
+                    }
+                case ChartType.Scatter:
+                    {
+                        newSeriesData.AcceptsUnsortedData = true;
+                        series = new XyScatterRenderableSeries();
+                        series.PointMarker = new Abt.Controls.SciChart.Visuals.PointMarkers.EllipsePointMarker();
+                        series.StrokeThickness = 5;
+                        break;
+                    }
+            }
+            newSeriesData.Append(xValues, yValues);
+
+            series.DataSeries = newSeriesData;
+            series.Tag = "Chart";
+            series.IsVisible = true;
+            series.SeriesColor = GetRandomColor();
+            return series;
+        }
     }
 }

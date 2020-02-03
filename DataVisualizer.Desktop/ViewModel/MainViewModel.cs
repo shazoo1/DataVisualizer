@@ -248,7 +248,7 @@ namespace DataVisualizer.Desktop.ViewModel
         private void AddPieChart(object obj)
         {
             var selectionModel = new SelectPieChartDataViewModel(_context, _dialogService, _validationService);
-            var selection = _dialogService.SelectPieChartData(selectionModel).Value;
+            var selection = _dialogService.SelectPieChartData(selectionModel).GetValueOrDefault();
             var chartData = new ObservableCollection<KeyValuePair<string, double>>();
             var model = new PieChartViewModel(_context, _dialogService, _validationService);
             if (_validationService.ValidateCategorical(selection.categories))

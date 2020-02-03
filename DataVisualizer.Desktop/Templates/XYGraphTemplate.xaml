@@ -10,13 +10,58 @@
         <DataTemplate.Resources>
             <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
         </DataTemplate.Resources>
-        <DockPanel>
-            <Grid DockPanel.Dock="Right">
-                <ListView x:Name="lvSeriesList" Grid.Row="2"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <s:SciChartSurface Grid.Row="0"
+                           Grid.RowSpan="3"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Panel.ZIndex="0"
+                           RenderableSeries="{Binding RenderableSeries}"  
+                           ChartTitle="{Binding ChartTitle}">
+                <s:SciChartSurface.XAxis>
+                    <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
+                </s:SciChartSurface.XAxis>
+                <s:SciChartSurface.YAxis>
+                    <s:NumericAxis AxisTitle="{Binding YAxisTitle}"/>
+                </s:SciChartSurface.YAxis>
+
+                <s:SciChartSurface.ChartModifier>
+                    <!-- Ensure ModifierGroup DataContext is the MainViewModel (not the ChartViewModel)-->
+                    <s:ModifierGroup>
+                        <s:RubberBandXyZoomModifier IsEnabled="False"  />
+                        <s:ZoomPanModifier IsEnabled="True" ClipModeX="None" />
+                        <s:ZoomExtentsModifier/>
+                        <s:MouseWheelZoomModifier x:Name="mouseWheelZoomModifier" />
+                        <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick" />
+                    </s:ModifierGroup>
+                </s:SciChartSurface.ChartModifier>
+            </s:SciChartSurface>
+            <Expander ExpandDirection="Left"
+                      Grid.Column="1"
+                      Grid.Row="1"
+                      Grid.RowSpan="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Row="0"
+                             Text="{Binding ChartTitle,UpdateSourceTrigger=PropertyChanged}"
+                             HorizontalAlignment="Stretch"
+                             TextAlignment="Center"/>
+                    <ListView x:Name="lvSeriesList" Grid.Row="1"
                       ItemsSource="{Binding RenderableSeries}"
-                      DataContext="{Binding}"
-                      DockPanel.Dock="Right"
-                      Visibility="{Binding HasPlots, Converter={StaticResource BoolToVisibilityConverter}}">
+                      DataContext="{Binding}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid Height="50" >
@@ -43,32 +88,10 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </Grid>
-            <s:SciChartSurface Grid.Row="0"
-                           Grid.RowSpan="2"
-                           Grid.Column="0"
-                           Panel.ZIndex="0"
-                           DockPanel.Dock="Left"
-                           RenderableSeries="{Binding RenderableSeries}"  
-                           ChartTitle="{Binding ChartTitle}">
-                <s:SciChartSurface.XAxis>
-                    <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
-                </s:SciChartSurface.XAxis>
-                <s:SciChartSurface.YAxis>
-                    <s:NumericAxis AxisTitle="{Binding YAxisTitle}"/>
-                </s:SciChartSurface.YAxis>
-
-                <s:SciChartSurface.ChartModifier>
-                    <!-- Ensure ModifierGroup DataContext is the MainViewModel (not the ChartViewModel)-->
-                    <s:ModifierGroup>
-                        <s:RubberBandXyZoomModifier IsEnabled="False"  />
-                        <s:ZoomPanModifier IsEnabled="True" ClipModeX="None" />
-                        <s:ZoomExtentsModifier/>
-                        <s:MouseWheelZoomModifier x:Name="mouseWheelZoomModifier" />
-                        <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick" />
-                    </s:ModifierGroup>
-                </s:SciChartSurface.ChartModifier>
-            </s:SciChartSurface>
-        </DockPanel>
+                <Button Grid.Row="2"
+                    Command="{Binding AddSeriesCommand}">Add plot</Button>
+                </Grid>
+            </Expander>
+        </Grid>
     </DataTemplate>
 </ResourceDictionary>
