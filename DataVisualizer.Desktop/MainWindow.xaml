@@ -57,7 +57,7 @@
                 <MenuItem Header="_Verbinden..." IsEnabled="False"/>
                 <MenuItem Header="_Beenden" IsEnabled="False"/>
                 <Separator />
-                <MenuItem Header="_Programm schließen" />
+                <MenuItem Header="_Programm schließen" Command="{Binding QuitCommand}"/>
             </MenuItem>
         </Menu>
         <dockablz:Layout Partition="2AE89D18-F236-4D20-9605-6C03319038E6" Name="RootLayout"

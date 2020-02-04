@@ -21,6 +21,7 @@ using System.Diagnostics;
 using Dragablz.Dockablz;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
@@ -51,49 +52,6 @@ namespace DataVisualizer.Desktop.ViewModel
                 RaisePropertyChanged("SelectedTabIndex");
             }
         }
-        private ObservableCollection<IRenderableSeries> _series;
-        public ObservableCollection<IRenderableSeries> RenderableSeries
-        {
-            get => _series;
-            set
-            {
-                _series = value;
-                RaisePropertyChanged("RenderableSeries");
-            }
-        }
-
-        private string _chartTitle = "Hello SciChart World!";
-        public string ChartTitle
-        {
-            get { return _chartTitle; }
-            set
-            {
-                _chartTitle = value;
-                RaisePropertyChanged("ChartTitle");
-            }
-        }
-
-        private string _xAxisTitle = "XAxis";
-        public string XAxisTitle
-        {
-            get { return _xAxisTitle; }
-            set
-            {
-                _xAxisTitle = value;
-                RaisePropertyChanged("XAxisTitle");
-            }
-        }
-
-        private string _yAxisTitle = "YAxis";
-        public string YAxisTitle
-        {
-            get { return _yAxisTitle; }
-            set
-            {
-                _yAxisTitle = value;
-                RaisePropertyChanged("YAxisTitle");
-            }
-        }
 
         private string _fileName = "";
         public string FileName
@@ -117,38 +75,9 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private bool _hasPlots = false;
-        public bool HasPlots
-        {
-            get => _hasPlots;
-            set
-            {
-                _hasPlots = value;
-                RaisePropertyChanged("HasPlots");
-            }
-        }
-
-        public ICommand OpenFileCommand
-        {
-            get; private set;
-        }
-
-        public ICommand AddPlotCommand
-        {
-            get; private set;
-        }
-
-        public ICommand AddPieChartCommand
-        {
-            get; private set;
-        }
-
-        public ICommand AddNewTabCommand
-        {
-            get; private set;
-        }
-
-
+        public ICommand OpenFileCommand { get; private set; }
+        public ICommand AddNewTabCommand { get; private set; }
+        public ICommand QuitCommand { get; private set; }
 
         //This has been added in tutorials. My hands are bound
         private readonly object _partition;
@@ -182,10 +111,10 @@ namespace DataVisualizer.Desktop.ViewModel
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
             AddNewTabCommand = new RelayCommand(new Action<object>(AddNewTab));
+            QuitCommand = new RelayCommand(new Action<object>(Quit));
             
             Tabs = new ObservableCollection<BaseGraphViewModel>();
 
-            _series = new ObservableCollection<IRenderableSeries>();
             _context = new CSVContext();
             
             //TODO :: dinjection
@@ -194,7 +123,6 @@ namespace DataVisualizer.Desktop.ViewModel
             _interTabClient = new InterTabClient();
 
             //Hardcode here
-            
         }
 
         public void OpenFile(object obj)
@@ -205,6 +133,9 @@ namespace DataVisualizer.Desktop.ViewModel
                 if (!IsDataSourceConnected)
                 {
                     FileName = _dialogService.OpenFile();
+                    //Don't show data preview if selected file path is null
+                    //It occurs when user cancels file opening
+                    if (FileName == null) return;
                     model = new DataPreviewViewModel(_dialogService, _context, FileName);
                 }
                 else
@@ -218,22 +149,17 @@ namespace DataVisualizer.Desktop.ViewModel
             }
             catch (Exception e)
             {
-                _dialogService.ShowWarning(e.Message + "\n" + e.StackTrace);
+                _dialogService.ShowError(e);
                 IsDataSourceConnected = false; 
             }
         }
 
-        #region Tab Operations
-        //Create new tab, containing the needed Surface
-        public int GetOrAddNewTab<T>(BaseGraphViewModel model) where T : BaseGraphViewModel
+        private void Quit(object obj)
         {
-            if (!Tabs.Contains(model))
-            {
-                Tabs.Add((T)model);
-                model.TabIndex = Tabs.IndexOf(model);
-            }
-            return model.TabIndex;
+            Application.Current.Shutdown();
         }
+
+        #region Tab Operations
 
         public void AddNewTab(object obj)
         {
