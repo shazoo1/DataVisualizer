@@ -31,8 +31,8 @@ namespace DataVisualizer.Desktop.ViewModel
         private IInterTabClient _interTabClient;
         public IInterTabClient InterTabClient { get => _interTabClient; }
 
-        private ObservableCollection<BasePlotViewModel> _tabs;
-        public ObservableCollection<BasePlotViewModel> Tabs
+        private ObservableCollection<BaseGraphViewModel> _tabs;
+        public ObservableCollection<BaseGraphViewModel> Tabs
         {
             get => _tabs;
             set
@@ -128,28 +128,29 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        private ICommand _openFileCommand;
         public ICommand OpenFileCommand
         {
-            get { return _openFileCommand; }
-            private set { _openFileCommand = value; }
+            get; private set;
         }
 
-        private ICommand _addPlotCommand;
         public ICommand AddPlotCommand
         {
-            get { return _addPlotCommand; }
-            private set { _addPlotCommand = value; }
+            get; private set;
         }
 
-        public ICommand _addPieChartCommand;
         public ICommand AddPieChartCommand
         {
-            get => _addPieChartCommand;
-            private set { _addPieChartCommand = value; }
+            get; private set;
         }
 
-        //This has been added in tutorials
+        public ICommand AddNewTabCommand
+        {
+            get; private set;
+        }
+
+
+
+        //This has been added in tutorials. My hands are bound
         private readonly object _partition;
         public object Partition
         {
@@ -180,9 +181,9 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             //Bind commands
             OpenFileCommand = new RelayCommand(new Action<object>(OpenFile));
-            AddPlotCommand = new RelayCommand(new Action<object>(AddXYPlot));
-            AddPieChartCommand = new RelayCommand(new Action<object>(AddPieChart));
-            Tabs = new ObservableCollection<BasePlotViewModel>();
+            AddNewTabCommand = new RelayCommand(new Action<object>(AddNewTab));
+            
+            Tabs = new ObservableCollection<BaseGraphViewModel>();
 
             _series = new ObservableCollection<IRenderableSeries>();
             _context = new CSVContext();
@@ -222,121 +223,9 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
-        public void AddXYPlot(object obj)
-        {
-            var selectionModel = new SelectXYPlotDataViewModel(_context, _dialogService, _validationService);
-            var selection = _dialogService.SelectXYPlotData(selectionModel);
-            if (selection != null)
-            {
-                BasePlotViewModel model = new XYPlotViewModel(_context, _dialogService, _validationService);
-                SelectedTabIndex = GetOrAddNewTab<XYPlotViewModel>(model);
-
-
-                //There must be only one range for x
-                var xValues = _context.GetNumericalColumnByIndex(selection.Value.x);
-                
-                foreach (int yColumnIndex in selection.Value.y)
-                {
-                    var yValues = _context.GetNumericalColumnByIndex(yColumnIndex);
-                    model.RenderableSeries.Add(BuildXYChart(xValues, yValues, selection.Value.type));
-                }
-                HasPlots = _series.Count > 0;
-            }
-        }
-
-        //TODO :: Move to PieChartViewModel
-        private void AddPieChart(object obj)
-        {
-            var selectionModel = new SelectPieChartDataViewModel(_context, _dialogService, _validationService);
-            var selection = _dialogService.SelectPieChartData(selectionModel).GetValueOrDefault();
-            var chartData = new ObservableCollection<KeyValuePair<string, double>>();
-            var model = new PieChartViewModel(_context, _dialogService, _validationService);
-            if (_validationService.ValidateCategorical(selection.categories))
-            {
-                var categories = _context.GetTextualColumnByIndex(selection.categories);
-                if (selection.values != -1 && _validationService.ValidateNumerical(selection.values))
-                {
-                    var values = _context.GetNumericalColumnByIndex(selection.values);
-                    model.Segments = (ObservableCollection<KeyValuePair<string, double>>)
-                        BuildPieChartSegments(categories, values);
-                }
-                else
-                {
-                    model.Segments = (ObservableCollection<KeyValuePair<string, double>>)
-                       BuildPieChartSegments(categories);
-                }
-            }
-            GetOrAddNewTab<PieChartViewModel>(model);
-        }
-
-        public ObservableCollection<KeyValuePair<string, double>> BuildPieChartSegments(string[] categories)
-        {
-            var aggregation = categories.GroupBy(x => x)
-                .Select(val => new Tuple<string, double>(val.Key, val.Count()));
-            var preparedCategories = aggregation.Select(x => x.Item1).ToArray();
-            var preparedValues = aggregation.Select(x => x.Item2).ToArray();
-
-            return BuildPieChartSegments(preparedCategories, preparedValues);
-        }
-
-        public ObservableCollection<KeyValuePair<string, double>> BuildPieChartSegments(string[] categories, double[] values)
-        {
-            var result = new ObservableCollection<KeyValuePair<string, double>>();
-            for (int i = 0; i < categories.Length; i++)
-            {
-                result.Add(new KeyValuePair<string, double>(categories[i], values[i]));
-            }
-            return result;
-        }
-
-        //TODO :: Move to XYPlotViewModel
-        public BaseRenderableSeries BuildXYChart(double[] xValues, double[] yValues, ChartType type)
-        {
-            var newSeriesData = new XyDataSeries<double, double>();
-            BaseRenderableSeries series = null;
-            switch (type)
-            {
-                case ChartType.Line:
-                    {
-                        series = new FastLineRenderableSeries();
-                        break;
-                    }
-                case ChartType.Column:
-                    {
-                        newSeriesData.AcceptsUnsortedData = true;
-                        series = new FastColumnRenderableSeries();
-                        break;
-                    }
-                case ChartType.Scatter:
-                    {
-                        newSeriesData.AcceptsUnsortedData = true;
-                        series = new XyScatterRenderableSeries();
-                        series.PointMarker = new Abt.Controls.SciChart.Visuals.PointMarkers.EllipsePointMarker();
-                        series.StrokeThickness = 5;
-                        break;
-                    }
-            }
-            newSeriesData.Append(xValues, yValues);
-
-            series.DataSeries = newSeriesData;
-            series.Tag = "Chart";
-            series.IsVisible = true;
-            series.SeriesColor = GetRandomColor();
-            return series;
-        }
-        
-
-        private Color GetRandomColor()
-        {
-            Random rnd = new Random();
-            Color randomColor = Color.FromScRgb(1, (float)App.RANDOM.NextDouble(), (float)App.RANDOM.NextDouble(), (float)App.RANDOM.NextDouble());
-            return randomColor;
-        }
-
-
         #region Tab Operations
         //Create new tab, containing the needed Surface
-        public int GetOrAddNewTab<T>(BasePlotViewModel model) where T : BasePlotViewModel
+        public int GetOrAddNewTab<T>(BaseGraphViewModel model) where T : BaseGraphViewModel
         {
             if (!Tabs.Contains(model))
             {
@@ -344,6 +233,35 @@ namespace DataVisualizer.Desktop.ViewModel
                 model.TabIndex = Tabs.IndexOf(model);
             }
             return model.TabIndex;
+        }
+
+        public void AddNewTab(object obj)
+        {
+            BaseGraphViewModel model = null;
+            VMType? vm = _dialogService.SelectSurfaceType();
+            if (vm != null)
+            {
+                switch (vm.Value)
+                {
+                    case VMType.PieChartViewModel:
+                        {
+                            model = new PieChartViewModel(_context, _dialogService, _validationService);
+                            break;
+                        }
+                    case VMType.XYPlotViewModel:
+                        {
+                            model = new XYPlotViewModel(_context, _dialogService, _validationService);
+                            break;
+                        }
+                }
+            }
+            if (model != null)
+            {
+                Tabs.Add(model);
+                model.TabIndex = Tabs.IndexOf(model);
+                //return model.TabIndex;
+            }
+            //return -1;
         }
 
         public ItemActionCallback ClosingTabItemHandler

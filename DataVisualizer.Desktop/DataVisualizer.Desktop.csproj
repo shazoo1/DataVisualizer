@@ -136,10 +136,9 @@
     <Compile Include="Helpers\DataSelectionTableBehavior.cs" />
     <Compile Include="Helpers\DataValidator.cs" />
     <Compile Include="Helpers\InterTabClient.cs" />
-    <Compile Include="Helpers\NewGraphTabFactory.cs" />
     <Compile Include="Helpers\ObservableQueue.cs" />
     <Compile Include="Helpers\PlotDataTemplateSelector.cs" />
-    <Compile Include="Helpers\RangeTypesConverter.cs" />
+    <Compile Include="Helpers\EnumConverters.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Services\Classes\DialogService.cs" />
     <Compile Include="Services\Classes\ValidationService.cs" />
@@ -148,12 +147,13 @@
     <Compile Include="Templates\SeriesListItemTemplate.xaml.cs">
       <DependentUpon>SeriesListItemTemplate.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\BasePlotViewModel.cs" />
+    <Compile Include="ViewModel\BaseGraphViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\DataPreviewViewModel.cs" />
     <Compile Include="ViewModel\Graphs\PieChartViewModel.cs" />
     <Compile Include="ViewModel\Interfaces\IDataPreviewViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\PlotTypeSelectionViewModel.cs" />
     <Compile Include="ViewModel\SelectDataViewModel.cs" />
     <Compile Include="ViewModel\SelectXYPlotDataViewModel.cs" />
     <Compile Include="ViewModel\SelectPieChartDataViewModel.cs" />
@@ -161,6 +161,9 @@
     <Compile Include="ViewModel\Graphs\XYPlotViewModel.cs" />
     <Compile Include="Views\DataPreviewWindow.xaml.cs">
       <DependentUpon>DataPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlotTypeSelectionWindow.xaml.cs">
+      <DependentUpon>PlotTypeSelectionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SelectDataWindow.cs" />
     <Compile Include="Views\SelectXYPlotDataWindow.xaml.cs">
@@ -201,6 +204,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DataPreviewWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlotTypeSelectionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -24,9 +24,9 @@ namespace DataVisualizer.Desktop.Helpers
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             FrameworkElement element = container as FrameworkElement;
-            if (element != null && item != null && item is BasePlotViewModel)
+            if (element != null && item != null && item is BaseGraphViewModel)
             {
-                BasePlotViewModel plot = item as BasePlotViewModel;
+                BaseGraphViewModel plot = item as BaseGraphViewModel;
                 return _graphTypeToTemplate[plot.GetType()];
             }
             return null;

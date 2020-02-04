@@ -32,14 +32,14 @@
             <Style TargetType="{x:Type dragablz:TabablzControl}" x:Key="TabablzControlStyle">
                 <Setter Property="ItemsSource" Value="{Binding Tabs}" />
                 <Setter Property="ClosingItemCallback" Value="{Binding ClosingTabItemHandler}" />
-                <Setter Property="NewItemFactory" Value="{x:Static helpers:NewGraphTabFactory.Factory}"/>
+                <Setter Property="NewItemFactory" Value="{x:Static helpers:NewChartTab.Factory}"/>
                 <Setter Property="ShowDefaultAddButton" Value="False" />
                 <Setter Property="AdjacentHeaderItemOffset" Value="-10" />
                 <Setter Property="ShowDefaultCloseButton" Value="True" />
                 <Setter Property="ItemContainerStyle" Value="{StaticResource TrapezoidDragableTabItemStyle}" />
                 <Setter Property="HeaderMemberPath" Value="ChartTitle" />
                 <Setter Property="InterTabController" Value="{StaticResource InterTabController}" />
-                <Setter Property="Margin" Value="0 8 0 0" />
+                <Setter Property="Margin" Value="0 0 0 0" />
                 <Setter Property="ContentTemplateSelector" Value="{StaticResource PlotDataTemplateSelector}"/>
                 <Setter Property="SelectedIndex" Value="{Binding SelectedTabIndex}" />
                 <!--For future icon
@@ -53,15 +53,12 @@
     </Window.Resources>
     <DockPanel DataContext="{StaticResource MainViewModel}">
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Open" Command="{Binding OpenFileCommand}"/>
-                <MenuItem Header="_Connect..." IsEnabled="False"/>
+            <MenuItem Header="_Datei">
+                <MenuItem Header="_Öffnen..." Command="{Binding OpenFileCommand}"/>
+                <MenuItem Header="_Verbinden..." IsEnabled="False"/>
+                <MenuItem Header="_Beenden" IsEnabled="False"/>
                 <Separator />
-                <MenuItem Header="_Exit" />
-            </MenuItem>
-            <MenuItem Header="_Add" IsEnabled="{Binding IsDataSourceConnected}">
-                <MenuItem Header="_XY plot" Command="{Binding AddPlotCommand}"/>
-                <MenuItem Header="_PieChart" Command="{Binding AddPieChartCommand}"/>
+                <MenuItem Header="_Programm schließen" />
             </MenuItem>
         </Menu>
         <dockablz:Layout Partition="2AE89D18-F236-4D20-9605-6C03319038E6" Name="RootLayout"
@@ -69,7 +66,7 @@
                      FloatingItemHeaderMemberPath="ChartTitle"
                      IsFloatDropZoneEnabled="True"
                      ClosingFloatingItemCallback="{Binding ClosingFloatingItemHandler}"
-                     FloatingItemsContainerMargin="0 2 0 0">
+                     FloatingItemsContainerMargin="0 0 0 0">
             <dockablz:Layout.BranchTemplate>
                 <DataTemplate>
                     <dragablz:TabablzControl Style="{StaticResource TabablzControlStyle}">
@@ -80,10 +77,16 @@
                 </DataTemplate>
             </dockablz:Layout.BranchTemplate>
             <dragablz:TabablzControl Style="{StaticResource TabablzControlStyle}">
-                    <dragablz:TabablzControl.InterTabController>
+                <dragablz:TabablzControl.HeaderSuffixContent>
+                    <Button Command="{Binding AddNewTabCommand}"
+                            HorizontalAlignment="Left"
+                            IsEnabled="{Binding IsDataSourceConnected}"
+                            Height="25">Einfügen</Button>
+                </dragablz:TabablzControl.HeaderSuffixContent>
+                <dragablz:TabablzControl.InterTabController>
                     <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" Partition="2AE89D18-F236-4D20-9605-6C03319038E6"></dragablz:InterTabController>
-                    </dragablz:TabablzControl.InterTabController>
-                </dragablz:TabablzControl>
+                </dragablz:TabablzControl.InterTabController>
+            </dragablz:TabablzControl>
         </dockablz:Layout>
     </DockPanel>
 </Window>

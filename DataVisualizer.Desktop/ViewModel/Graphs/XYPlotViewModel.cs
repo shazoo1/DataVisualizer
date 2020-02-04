@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
-    internal class XYPlotViewModel : BasePlotViewModel
+    internal class XYPlotViewModel : BaseGraphViewModel
     {
         #region Bindables
 
@@ -53,6 +53,7 @@ namespace DataVisualizer.Desktop.ViewModel
             : base(context, dialogService, validationService)
         {
             VMType = Enums.VMType.XYPlotViewModel;
+            ChartTitle = "XY Grafik";
         }
 
         protected override void AddSeries(object obj)

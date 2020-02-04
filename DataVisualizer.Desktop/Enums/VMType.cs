@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataVisualizer.Desktop.Enums
 {
-    enum VMType
+    public enum VMType
     {
         XYPlotViewModel,
         PieChartViewModel

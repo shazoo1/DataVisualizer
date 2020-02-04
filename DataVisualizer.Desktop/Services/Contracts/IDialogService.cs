@@ -1,4 +1,5 @@
 ﻿using DataVisualizer.Common.Enums;
+using DataVisualizer.Desktop.Enums;
 using DataVisualizer.Desktop.ViewModel;
 using DataVisualizer.Persistence.Contracts;
 using System;
@@ -17,5 +18,6 @@ namespace DavaVisualizer.Desktop.Services.Contracts
         void ShowWarning(string text);
         void ShowError(Exception e);
         bool PreviewFile(DataPreviewViewModel model, ref IContext context);
+        VMType? SelectSurfaceType();
     }
 }

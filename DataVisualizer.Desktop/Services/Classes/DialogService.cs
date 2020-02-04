@@ -1,4 +1,5 @@
 ﻿using DataVisualizer.Common.Enums;
+using DataVisualizer.Desktop.Enums;
 using DataVisualizer.Desktop.ViewModel;
 using DataVisualizer.Desktop.Views;
 using DataVisualizer.Persistence.Contracts;
@@ -85,6 +86,27 @@ namespace DavaVisualizer.Desktop.Services.Classes
             {
                 var values = (model.CategoryColumns.FirstOrDefault(), model.ValueColumns.FirstOrDefault());
                 return values;
+            }
+            return null;
+        }
+
+        public VMType? SelectSurfaceType()
+        {
+            var window = new PlotTypeSelectionWindow();
+            var model = new PlotTypeSelectionViewModel();
+            window.DataContext = model;
+            model.OnOkButtonClicked += () =>
+            {
+                window.DialogResult = true;
+                window.Close();
+            };
+            model.OnCancelButtonClicked += () =>
+            {
+                window.Close();
+            };
+            if (window.ShowDialog() == true)
+            {
+                return model.SelectedItem.UnderlyingVmType;
             }
             return null;
         }

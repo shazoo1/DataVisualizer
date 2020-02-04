@@ -4,6 +4,7 @@ using DataVisualizer.Desktop.Helpers;
 using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
+using Dragablz;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +16,7 @@ using System.Windows.Media;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
-    public abstract class BasePlotViewModel : BaseViewModel
+    public abstract class BaseGraphViewModel : BaseViewModel
     {
         protected IContext _context;
         protected IDialogService _dialogService;
@@ -65,7 +66,7 @@ namespace DataVisualizer.Desktop.ViewModel
         public ICommand AddSeriesCommand
         {
             get => _addSeriesCommand;
-            private set => _addSeriesCommand = value;
+            protected set => _addSeriesCommand = value;
         }
 
         private ICommand _removeSeriesCommand;
@@ -76,7 +77,7 @@ namespace DataVisualizer.Desktop.ViewModel
         }
         #endregion
 
-        public BasePlotViewModel(IContext context, IDialogService dialogService, IValidationService validationService)
+        public BaseGraphViewModel(IContext context, IDialogService dialogService, IValidationService validationService)
         {
             _context = context;
             _validationService = validationService;

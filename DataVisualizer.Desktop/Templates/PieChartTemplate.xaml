@@ -30,53 +30,23 @@
                     IndependentValuePath="Key" ItemsSource="{Binding Segments}" 
                     IsSelectionEnabled="True" />
             </chartingToolkit:Chart>
-            <!--<Expander ExpandDirection="Left"
+            <Expander ExpandDirection="Left"
                       Grid.Column="1"
                       Grid.Row="1"
                       Grid.RowSpan="2">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
-                        <RowDefinition Height="150"/>
                         <RowDefinition Height="20"/>
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
                              Text="{Binding ChartTitle,UpdateSourceTrigger=PropertyChanged}"
                              HorizontalAlignment="Stretch"
                              TextAlignment="Center"/>
-                    <ListView x:Name="lvSeriesList" Grid.Row="1"
-                      ItemsSource="{Binding RenderableSeries}"
-                      DataContext="{Binding}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Height="50" >
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="tbChartName" Text="{Binding Tag}"/>
-                                    <Button Grid.Row="0" Grid.Column="1"
-                                    Command="{Binding ElementName=lvSeriesList, Path=DataContext.RemoveSeriesCommand}"
-                                    CommandParameter="{Binding}" 
-                                    MinWidth="25"
-                                    Content="X"
-                                    HorizontalAlignment="Right"/>
-                                    <Rectangle Fill="{Binding SeriesColor,
-                                    Converter={StaticResource ColorBrushConverter}}" 
-                                    Grid.Row="1" Grid.Column="0"/>
-                                    <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <Button Grid.Row="2"
-                    Command="{Binding AddSeriesCommand}">Add plot</Button>
+                    <Button Grid.Row="1"
+                    Command="{Binding AddSeriesCommand}">Daten auswählen</Button>
                 </Grid>
-            </Expander>-->
+            </Expander>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
