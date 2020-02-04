@@ -67,7 +67,7 @@ namespace DataVisualizer.Desktop.ViewModel
             if (SelectedRanges.Count() == 0)
             {
                 Error = true;
-                ErrorText += "No data selected.";
+                ErrorText += "Keine Daten ausgewählt.";
             }
             if (CategorySelected)
             {
@@ -93,7 +93,7 @@ namespace DataVisualizer.Desktop.ViewModel
                 if (!_validationService.ValidateCategorical(SelectedRanges[0]))
                 {
                     Error = true;
-                    ErrorText += "The given data has too many categories for the Pie chart.";
+                    ErrorText += "Die angegebene Daten haben zu viele Kategorien für das Kreisdiagramm.";
                 }
             }
         }

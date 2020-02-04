@@ -126,12 +126,12 @@ namespace DataVisualizer.Desktop.ViewModel
             if (XSelection == null || XSelection.Length == 0)
             {
                 Error = true;
-                ErrorText += "Select X axis values.\n";
+                ErrorText += "Auswählen Sie bitte X Werte.\n";
             }
             if (YSelection == null || YSelection.Length == 0)
             {
                 Error = true;
-                ErrorText += "Select Y axis values.\n";
+                ErrorText += "Auswählen Sie bitte Y Werte.\n";
             }
             //No need to validate if no data selected
             if (!Error)
@@ -147,7 +147,7 @@ namespace DataVisualizer.Desktop.ViewModel
                             !_validationService.ValidateNumerical(YSelection))
             {
                 Error = true;
-                ErrorText += string.Format("{0} chart values must be numerical.\n", ChartType.ToString());
+                ErrorText += string.Format("{0} Diagramm Werte müssen zahlenmäßig sein.\n", ChartType.ToString());
                 return;
             }
             switch (ChartType)
@@ -158,7 +158,7 @@ namespace DataVisualizer.Desktop.ViewModel
                             !_validationService.ValidateOrdered(XSelection[0]))
                         {
                             Error = true;
-                            ErrorText += "X axis values must be distinct and ordered.\n";
+                            ErrorText += "X Werte müssen einzigartig und geordnet sein.\n";
                         }
                         break;
                     }
@@ -167,7 +167,7 @@ namespace DataVisualizer.Desktop.ViewModel
                         if (!_validationService.ValidateUnique(XSelection[0]))
                         {
                             Error = true;
-                            ErrorText += "X axis values must be distinct.\n";
+                            ErrorText += "X Werte müssen müssen einzigartig sein.\n";
                         }
                         break;
                     }

@@ -7,7 +7,7 @@
         xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers"
         xmlns:control="clr-namespace:DataVisualizer.Desktop.Controls"
         mc:Ignorable="d"
-        Title="SelectPieChartDataWindow" Height="450" Width="800">
+        Title="Kreisdiagrammendaten auswählen" Height="450" Width="800">
     <Window.Resources>
         <local:SelectPieChartDataViewModel x:Key="SelectPieChartDataViewModel"/>
     </Window.Resources>
@@ -31,7 +31,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" x:Name="btnCancel"
-                    Content="Cancel"
+                    Content="Abbrechen"
                     Command="{Binding CancelCommand}"/>
             <Button Grid.Column="1" x:Name="btnOk"
                     Content="OK"
@@ -47,9 +47,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
             </Grid>
-            <RadioButton Content="Category + value"
+            <RadioButton Content="Kategorie + Menge"
                          IsChecked="{Binding ValueSelected}"/>
-            <RadioButton Content="Only category"
+            <RadioButton Content="Nur Kategorie"
                          IsChecked="{Binding CategorySelected}"/>
         </StackPanel>
     </Grid>

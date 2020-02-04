@@ -32,7 +32,6 @@
             <Style TargetType="{x:Type dragablz:TabablzControl}" x:Key="TabablzControlStyle">
                 <Setter Property="ItemsSource" Value="{Binding Tabs}" />
                 <Setter Property="ClosingItemCallback" Value="{Binding ClosingTabItemHandler}" />
-                <Setter Property="NewItemFactory" Value="{x:Static helpers:NewChartTab.Factory}"/>
                 <Setter Property="ShowDefaultAddButton" Value="False" />
                 <Setter Property="AdjacentHeaderItemOffset" Value="-10" />
                 <Setter Property="ShowDefaultCloseButton" Value="True" />

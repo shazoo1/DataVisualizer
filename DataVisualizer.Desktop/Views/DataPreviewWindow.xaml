@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DataVisualizer.Desktop.Views"
         xmlns:viewModel="clr-namespace:DataVisualizer.Desktop.ViewModel"
         mc:Ignorable="d"
-        Title="DataPreviewWindow" Height="450" Width="800">
+        Title="Datenvorschau" Height="450" Width="800">
     <Window.Resources>
         <viewModel:DataPreviewViewModel  x:Key="DataPreviewViewModel"/>
     </Window.Resources>
@@ -21,15 +21,15 @@
         <WrapPanel Orientation="Vertical" Grid.Column="1" Panel.ZIndex="1" Height="500">
             <DockPanel>
                 <TextBox DockPanel.Dock="Top" Text="{Binding FilePath}"></TextBox>
-                <Button DockPanel.Dock="Bottom" x:Name="btnOpenFile" Content="Open file"
+                <Button DockPanel.Dock="Bottom" x:Name="btnOpenFile" Content="Datei öffnen"
                         Command="{Binding OpenFileCommand}"/>
             </DockPanel>
             <DockPanel>
-                <Label Margin="10 5">Delimiter</Label>
+                <Label Margin="10 5">Trennzeichen</Label>
                 <TextBox x:Name="tbxDelimiter" Margin="10 0" Text="{Binding Delimiter}"/>
             </DockPanel>
-            <CheckBox x:Name="cbxHeader" IsChecked="{Binding ContainsHeader}" Margin="10 ">Contains header</CheckBox>
-            <Button x:Name="btnRefresh" Command="{Binding RefreshCommand}" Content="Refresh" HorizontalAlignment="Center"/>
+            <CheckBox x:Name="cbxHeader" IsChecked="{Binding ContainsHeader}" Margin="10 ">Kopfzeile</CheckBox>
+            <Button x:Name="btnRefresh" Command="{Binding RefreshCommand}" Content="Aktualisieren" HorizontalAlignment="Center"/>
             <Button x:Name="btnOk" Command="{Binding OkCommand}" Content="Ok" HorizontalAlignment="Center"/>
         </WrapPanel>
     </Grid>

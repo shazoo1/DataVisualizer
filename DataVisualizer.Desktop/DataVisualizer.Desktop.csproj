@@ -134,7 +134,6 @@
     <Compile Include="Helpers\BoolToVisibilityConverter.cs" />
     <Compile Include="Helpers\ColorBrushConverter.cs" />
     <Compile Include="Helpers\DataSelectionTableBehavior.cs" />
-    <Compile Include="Helpers\DataValidator.cs" />
     <Compile Include="Helpers\InterTabClient.cs" />
     <Compile Include="Helpers\ObservableQueue.cs" />
     <Compile Include="Helpers\PlotDataTemplateSelector.cs" />
