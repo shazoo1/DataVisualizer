@@ -48,14 +48,15 @@ namespace DataVisualizer.Desktop.ViewModel
         public delegate void CancelButtonClicked();
         public event CancelButtonClicked OnCancelButtonClicked;
 
-        public VMType ResultingModelType { get; private set; }
-        private Dictionary<string, VMType> SurfaceToViewModelMap { get; set; }
+        public Enums.SurfaceType ResultingModelType { get; private set; }
+        private Dictionary<string, Enums.SurfaceType> SurfaceToViewModelMap { get; set; }
 
         public PlotTypeSelectionViewModel() : base()
         {
             _graphTypes = new ObservableCollection<SurfaceType>();
-            _graphTypes.Add(new SurfaceType("XY Grafik", VMType.XYPlotViewModel));
-            _graphTypes.Add(new SurfaceType("Kreisdiagramm", VMType.PieChartViewModel));
+            _graphTypes.Add(new SurfaceType("XY Grafik", Enums.SurfaceType.XYPlotSurface));
+            _graphTypes.Add(new SurfaceType("Kreisdiagramm", Enums.SurfaceType.PieChartSurface));
+            _graphTypes.Add(new SurfaceType("Senkrechte Diagramm", Enums.SurfaceType.VerticalSurface));
 
             OkCommand = new RelayCommand(OkButtonClick);
             CancelCommand = new RelayCommand(CancelButtonClick);
@@ -64,13 +65,13 @@ namespace DataVisualizer.Desktop.ViewModel
         //A class for displaying in a list. It is not needed anywhere in code.
         public class SurfaceType
         {
-            public SurfaceType(string label, VMType vmType)
+            public SurfaceType(string label, Enums.SurfaceType vmType)
             {
                 Label = label;
                 UnderlyingVmType = vmType;
             }
             public string Label { get; set; }
-            public VMType UnderlyingVmType { get; set; }
+            public Enums.SurfaceType UnderlyingVmType { get; set; }
         }
 
         private void OkButtonClick(object obj)

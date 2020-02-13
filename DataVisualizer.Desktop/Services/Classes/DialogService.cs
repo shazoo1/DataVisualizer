@@ -1,6 +1,7 @@
 ﻿using DataVisualizer.Common.Enums;
 using DataVisualizer.Desktop.Enums;
 using DataVisualizer.Desktop.ViewModel;
+using DataVisualizer.Desktop.ViewModel.Selection;
 using DataVisualizer.Desktop.Views;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
@@ -48,7 +49,7 @@ namespace DavaVisualizer.Desktop.Services.Classes
             else return false;
         }
 
-        public (int x, int[] y, ChartType type)? SelectXYPlotData(SelectXYPlotDataViewModel model)
+        public (int x, int[] y, PlainSeriesTypes type)? SelectXYPlotData(SelectXYPlotDataViewModel model)
         {
             var selectionWindow = new SelectXYPlotDataWindow();
             selectionWindow.DataContext = model;
@@ -63,8 +64,8 @@ namespace DavaVisualizer.Desktop.Services.Classes
             };
             if (selectionWindow.ShowDialog() == true)
             {
-                var values = (model.XSelection.FirstOrDefault(), model.YSelection, model.ChartType);
-                return values;
+                var columnNumbers = (model.XSelection.FirstOrDefault(), model.YSelection, model.SelectedSeriesType.ChartType);
+                return columnNumbers;
             }
             return null;
         }
@@ -84,13 +85,34 @@ namespace DavaVisualizer.Desktop.Services.Classes
             };
             if (selectionWindow.ShowDialog() == true)
             {
-                var values = (model.CategoryColumns.FirstOrDefault(), model.ValueColumns.FirstOrDefault());
-                return values;
+                var columnNumbers = (model.CategoryColumns.FirstOrDefault(), model.ValueColumns.FirstOrDefault());
+                return columnNumbers;
             }
             return null;
         }
 
-        public VMType? SelectSurfaceType()
+        public (int x, int[] y, PlainSeriesTypes type)? SelectVerticalPlotData(SelectVerticalDataViewModel model)
+        {
+            var selectionWindow = new SelectVerticalDataWindow();
+            selectionWindow.DataContext = model;
+            model.CancelButtonClicked += () => {
+                selectionWindow.DialogResult = false;
+                selectionWindow.Close();
+            };
+            model.OkButtonClicked += () =>
+            {
+                selectionWindow.DialogResult = true;
+                selectionWindow.Close();
+            };
+            if (selectionWindow.ShowDialog() == true)
+            {
+                var columnNumbers = (model.XSelection.FirstOrDefault(), model.YSelection, model.SelectedSeriesType.ChartType);
+                return columnNumbers;
+            }
+            return null;
+        }
+
+        public SurfaceType? SelectSurfaceType()
         {
             var window = new PlotTypeSelectionWindow();
             var model = new PlotTypeSelectionViewModel();
@@ -121,5 +143,6 @@ namespace DavaVisualizer.Desktop.Services.Classes
             var messageText = string.Format("Exception: {0}\nStackTrace:{1}\nInner:{2}", e.Message, e.StackTrace, e.InnerException.Message);
             MessageBox.Show(messageText);
         }
+
     }
 }

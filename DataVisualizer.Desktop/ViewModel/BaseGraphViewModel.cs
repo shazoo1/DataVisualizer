@@ -21,7 +21,7 @@ namespace DataVisualizer.Desktop.ViewModel
         protected IContext _context;
         protected IDialogService _dialogService;
         protected IValidationService _validationService;
-        internal VMType VMType;
+        internal SurfaceType SurfaceType;
 
         #region Bindables
         private bool _hasPlots;

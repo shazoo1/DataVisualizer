@@ -66,7 +66,7 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             if (SelectedRanges.Count() == 0)
             {
-                Error = true;
+                HasSelectionError = true;
                 ErrorText += "Keine Daten ausgewählt.";
             }
             if (CategorySelected)
@@ -80,19 +80,19 @@ namespace DataVisualizer.Desktop.ViewModel
             }
 
             // No need to validate, if the error has already occured
-            if (!Error)
+            if (!HasSelectionError)
                 Validate();
 
             base.OnOkClicked(obj);
         }
 
-        private void Validate()
+        protected override void Validate()
         {
             if (SelectedRanges.Length == 1)
             {
                 if (!_validationService.ValidateCategorical(SelectedRanges[0]))
                 {
-                    Error = true;
+                    HasSelectionError = true;
                     ErrorText += "Die angegebene Daten haben zu viele Kategorien für das Kreisdiagramm.";
                 }
             }

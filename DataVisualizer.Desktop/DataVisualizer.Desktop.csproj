@@ -59,6 +59,9 @@
     <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Prism, Version=7.2.0.1422, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.2.0.1422\lib\net45\Prism.dll</HintPath>
     </Reference>
@@ -72,12 +75,16 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -129,8 +136,10 @@
     <Compile Include="Controls\TableColumnSelectorControl.xaml.cs">
       <DependentUpon>TableColumnSelectorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\SeriesType.cs" />
+    <Compile Include="Enums\ColumnTypes.cs" />
     <Compile Include="Enums\RangeType.cs" />
-    <Compile Include="Enums\VMType.cs" />
+    <Compile Include="Enums\SurfaceType.cs" />
     <Compile Include="Helpers\BoolToVisibilityConverter.cs" />
     <Compile Include="Helpers\ColorBrushConverter.cs" />
     <Compile Include="Helpers\DataSelectionTableBehavior.cs" />
@@ -140,8 +149,10 @@
     <Compile Include="Helpers\EnumConverters.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Services\Classes\DialogService.cs" />
+    <Compile Include="Services\Classes\LoggingService.cs" />
     <Compile Include="Services\Classes\ValidationService.cs" />
     <Compile Include="Services\Contracts\IDialogService.cs" />
+    <Compile Include="Services\Contracts\ILoggingService.cs" />
     <Compile Include="Services\Contracts\IValidationService.cs" />
     <Compile Include="Templates\SeriesListItemTemplate.xaml.cs">
       <DependentUpon>SeriesListItemTemplate.xaml</DependentUpon>
@@ -150,12 +161,14 @@
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\DataPreviewViewModel.cs" />
     <Compile Include="ViewModel\Graphs\PieChartViewModel.cs" />
+    <Compile Include="ViewModel\Graphs\VerticalPlotViewModel.cs" />
     <Compile Include="ViewModel\Interfaces\IDataPreviewViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\PlotTypeSelectionViewModel.cs" />
-    <Compile Include="ViewModel\SelectDataViewModel.cs" />
-    <Compile Include="ViewModel\SelectXYPlotDataViewModel.cs" />
-    <Compile Include="ViewModel\SelectPieChartDataViewModel.cs" />
+    <Compile Include="ViewModel\Selection\PlotTypeSelectionViewModel.cs" />
+    <Compile Include="ViewModel\Selection\SelectDataViewModel.cs" />
+    <Compile Include="ViewModel\Selection\SelectVerticalDataViewModel.cs" />
+    <Compile Include="ViewModel\Selection\SelectXYPlotDataViewModel.cs" />
+    <Compile Include="ViewModel\Selection\SelectPieChartDataViewModel.cs" />
     <Compile Include="ViewModel\TabHostViewModel.cs" />
     <Compile Include="ViewModel\Graphs\XYPlotViewModel.cs" />
     <Compile Include="Views\DataPreviewWindow.xaml.cs">
@@ -165,6 +178,9 @@
       <DependentUpon>PlotTypeSelectionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SelectDataWindow.cs" />
+    <Compile Include="Views\SelectVerticalDataWindow.xaml.cs">
+      <DependentUpon>SelectVerticalDataWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SelectXYPlotDataWindow.xaml.cs">
       <DependentUpon>SelectXYPlotDataWindow.xaml</DependentUpon>
     </Compile>
@@ -202,11 +218,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Templates\VerticalPlotTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DataPreviewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PlotTypeSelectionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SelectVerticalDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

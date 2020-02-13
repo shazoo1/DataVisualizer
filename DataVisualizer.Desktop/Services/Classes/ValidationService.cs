@@ -25,7 +25,7 @@ namespace DataVisualizer.Desktop.Services.Classes
         {
             // It will be hard to see more than 15 values
             // However, the maximal number of elements can be changed
-            // TODO :: Probably move to settings
+            // TODO :: Probably it move to settings
             var data = _context.GetTextualColumnByIndex(column);
             int distinctCategoriesCount = data.Distinct().Count();
             if (data.Length > 0)
@@ -45,7 +45,7 @@ namespace DataVisualizer.Desktop.Services.Classes
         {
             // It will be hard to see more than 15 values
             // However, the maximal number of elements can be changed
-            // TODO :: Probably move to settings
+            // TODO :: Probably move it to settings
 
             return values.Distinct().Count() <= MAXPIECHARTSEGMENTS;
         }
@@ -123,5 +123,10 @@ namespace DataVisualizer.Desktop.Services.Classes
             return values.Length == values.Distinct().Count();
         }
         #endregion
+
+        public void TryGetColumnType(int column)
+        {
+
+        }
     }
 }

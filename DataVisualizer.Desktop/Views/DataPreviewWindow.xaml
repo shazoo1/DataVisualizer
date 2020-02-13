@@ -25,8 +25,8 @@
                         Command="{Binding OpenFileCommand}"/>
             </DockPanel>
             <DockPanel>
-                <Label Margin="10 5">Trennzeichen</Label>
-                <TextBox x:Name="tbxDelimiter" Margin="10 0" Text="{Binding Delimiter}"/>
+                <Label Margin="5 5">Trennzeichen</Label>
+                <TextBox x:Name="tbxDelimiter" Margin="0 5 5 0" Text="{Binding Delimiter}"/>
             </DockPanel>
             <CheckBox x:Name="cbxHeader" IsChecked="{Binding ContainsHeader}" Margin="10 ">Kopfzeile</CheckBox>
             <Button x:Name="btnRefresh" Command="{Binding RefreshCommand}" Content="Aktualisieren" HorizontalAlignment="Center"/>

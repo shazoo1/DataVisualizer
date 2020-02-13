@@ -167,7 +167,5 @@ namespace DataVisualizer.Persistence
             return (from DataRow row in _data.Rows
                     select (string)row[index]).ToArray();
         }
-
-        
     }
 }

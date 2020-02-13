@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace DataVisualizer.Desktop.Enums
 {
-    public enum VMType
+    enum ColumnTypes
     {
-        XYPlotViewModel,
-        PieChartViewModel
+        Number,
+        Category,
+        Date,
+        Unknown
     }
 }

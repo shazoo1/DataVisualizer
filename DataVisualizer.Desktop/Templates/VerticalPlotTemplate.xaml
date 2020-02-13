@@ -2,11 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
                     xmlns:local="clr-namespace:DataVisualizer.Desktop"
-                    xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers;assembly=DataVisualizer.Desktop">
-    
+                    xmlns:helpers="clr-namespace:DataVisualizer.Desktop.Helpers;assembly=">
+
     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    <!--XY Graph template-->
-    <DataTemplate x:Key="XYGraphTemplate" DataType="x:Type ViewModels.XYPlotViewModel">
+    <!--Vertical Graph template-->
+    <DataTemplate x:Key="VerticalPlotTemplate" DataType="x:Type ViewModel.Graphs.VerticalPlotViewModel">
         <DataTemplate.Resources>
             <helpers:ColorBrushConverter x:Key="ColorBrushConverter"/>
         </DataTemplate.Resources>
@@ -29,12 +29,6 @@
                            ChartTitle="{Binding ChartTitle}"
                            XAxis="{Binding XAxis}"
                            YAxis="{Binding YAxis}">
-                <!--<s:SciChartSurface.XAxis>
-                    <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
-                </s:SciChartSurface.XAxis>
-                <s:SciChartSurface.YAxis>
-                    <s:NumericAxis AxisTitle="{Binding YAxisTitle}"/>
-                </s:SciChartSurface.YAxis>-->
 
                 <s:SciChartSurface.ChartModifier>
                     <!-- Ensure ModifierGroup DataContext is the MainViewModel (not the ChartViewModel)-->
@@ -64,33 +58,33 @@
                     <ListView x:Name="lvSeriesList" Grid.Row="1"
                       ItemsSource="{Binding RenderableSeries}"
                       DataContext="{Binding}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Height="50" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" Grid.Column="0" x:Name="tbChartName" Text="{Binding Tag}"/>
-                                <Button Grid.Row="0" Grid.Column="1"
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="50" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="tbChartName" Text="{Binding Tag}"/>
+                                    <Button Grid.Row="0" Grid.Column="1"
                                     Command="{Binding ElementName=lvSeriesList, Path=DataContext.RemoveSeriesCommand}"
                                     CommandParameter="{Binding}" 
                                     MinWidth="25"
                                     Content="X"
                                     HorizontalAlignment="Right"/>
-                                <Rectangle Fill="{Binding SeriesColor,
+                                    <Rectangle Fill="{Binding SeriesColor,
                                     Converter={StaticResource ColorBrushConverter}}" 
                                     Grid.Row="1" Grid.Column="0"/>
-                                <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <Button Grid.Row="2"
+                                    <CheckBox Grid.Row="1" Grid.Column="1" Content="Visible" IsChecked="{Binding IsVisible}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Grid.Row="2"
                     Command="{Binding AddSeriesCommand}">Add plot</Button>
                 </Grid>
             </Expander>

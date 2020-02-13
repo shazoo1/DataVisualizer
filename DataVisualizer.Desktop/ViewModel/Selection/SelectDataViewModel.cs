@@ -19,7 +19,7 @@ namespace DataVisualizer.Desktop.ViewModel
         protected IDialogService _dialogService;
         protected IValidationService _validationService;
 
-        protected bool Error;
+        protected bool HasSelectionError;
         protected string ErrorText;
 
         public delegate void OnCancelButtonClicked();
@@ -109,7 +109,7 @@ namespace DataVisualizer.Desktop.ViewModel
             _context = context;
             _dialogService = dialogService;
             _validationService = validationService;
-            Error = false;
+            HasSelectionError = false;
 
             PreviewData = context.GetFirstLines(100);
             InitializeViewModel();
@@ -125,12 +125,12 @@ namespace DataVisualizer.Desktop.ViewModel
 
         protected virtual void OnOkClicked(object obj)
         {
-            if (Error)
+            if (HasSelectionError)
             {
                 _dialogService.ShowWarning(ErrorText);
 
                 // Reset error immediately after warning is shown
-                Error = false;
+                HasSelectionError = false;
                 ErrorText = "";
                 return;
             }
@@ -140,5 +140,7 @@ namespace DataVisualizer.Desktop.ViewModel
         {
             CancelButtonClicked?.Invoke();
         }
+
+        protected virtual void Validate() { }
     }
 }

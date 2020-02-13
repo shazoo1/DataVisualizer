@@ -1,6 +1,9 @@
 ﻿using Abt.Controls.SciChart.Model.DataSeries;
+using Abt.Controls.SciChart.Visuals;
+using Abt.Controls.SciChart.Visuals.Axes;
 using Abt.Controls.SciChart.Visuals.RenderableSeries;
 using DataVisualizer.Common.Enums;
+using DataVisualizer.Desktop.Enums;
 using DataVisualizer.Desktop.Services.Contracts;
 using DataVisualizer.Persistence.Contracts;
 using DavaVisualizer.Desktop.Services.Contracts;
@@ -17,7 +20,7 @@ namespace DataVisualizer.Desktop.ViewModel
 {
     internal class XYPlotViewModel : BaseGraphViewModel
     {
-        #region Bindables
+        #region Bindings
 
         private string _xAxisTitle = "XAxis";
         public string XAxisTitle
@@ -41,6 +44,26 @@ namespace DataVisualizer.Desktop.ViewModel
             }
         }
 
+        private IAxis _xAxis;
+        public IAxis XAxis
+        {
+            get => _xAxis;
+            set
+            {
+                _xAxis = value;
+            }
+        }
+
+        private IAxis _yAxis;
+        public IAxis YAxis
+        {
+            get => _yAxis;
+            set
+            {
+                _yAxis = value;
+            }
+        }
+
         private ICommand _addPlotCommand;
         public ICommand AddPlotCommand
         {
@@ -49,11 +72,13 @@ namespace DataVisualizer.Desktop.ViewModel
         }
         #endregion
 
-        public XYPlotViewModel(IContext context, IDialogService dialogService, IValidationService validationService)
-            : base(context, dialogService, validationService)
+        public XYPlotViewModel(IContext context, IDialogService dialogService,
+            IValidationService validationService) : base(context, dialogService, validationService)
         {
-            VMType = Enums.VMType.XYPlotViewModel;
+            SurfaceType = Enums.SurfaceType.XYPlotSurface;
             ChartTitle = "XY Grafik";
+
+            AddAxes();
         }
 
         protected override void AddSeries(object obj)
@@ -74,24 +99,24 @@ namespace DataVisualizer.Desktop.ViewModel
             base.AddSeries(obj);
         }
 
-        public BaseRenderableSeries BuildXYChart(double[] xValues, double[] yValues, ChartType type)
+        public BaseRenderableSeries BuildXYChart(double[] xValues, double[] yValues, PlainSeriesTypes type)
         {
             var newSeriesData = new XyDataSeries<double, double>();
             BaseRenderableSeries series = null;
             switch (type)
             {
-                case ChartType.Line:
+                case PlainSeriesTypes.Line:
                     {
                         series = new FastLineRenderableSeries();
                         break;
                     }
-                case ChartType.Column:
+                case PlainSeriesTypes.Column:
                     {
                         newSeriesData.AcceptsUnsortedData = true;
                         series = new FastColumnRenderableSeries();
                         break;
                     }
-                case ChartType.Scatter:
+                case PlainSeriesTypes.Scatter:
                     {
                         newSeriesData.AcceptsUnsortedData = true;
                         series = new XyScatterRenderableSeries();
@@ -107,6 +132,13 @@ namespace DataVisualizer.Desktop.ViewModel
             series.IsVisible = true;
             series.SeriesColor = GetRandomColor();
             return series;
+        }
+
+        public void AddAxes()
+        {
+            //TODO :: Add axis labels
+            XAxis = new NumericAxis();
+            YAxis = new NumericAxis();
         }
     }
 }

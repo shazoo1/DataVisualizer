@@ -28,7 +28,7 @@ namespace DataVisualizer.Desktop.ViewModel
         public PieChartViewModel(IContext context, IDialogService dialog,IValidationService validation)
             : base(context, dialog, validation) 
         {
-            VMType = Enums.VMType.PieChartViewModel;
+            SurfaceType = Enums.SurfaceType.PieChartSurface;
             ChartTitle = "Pie Chart";
         }
 

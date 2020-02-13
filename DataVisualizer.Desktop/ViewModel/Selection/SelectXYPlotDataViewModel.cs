@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Abt.Controls.SciChart.Visuals.RenderableSeries;
+using DataVisualizer.Desktop.Classes;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
@@ -23,22 +24,18 @@ namespace DataVisualizer.Desktop.ViewModel
         public int[] YSelection { get; set; }
 
         #region Bindings
-        private Array _chartTypes;
-        public Array ChartTypes
+        private ObservableCollection<SeriesType> _availableSeriesTypes;
+        public ObservableCollection<SeriesType> AvailableSeriesTypes
         {
-            get => _chartTypes;
-            private set { _chartTypes = value; }
+            get => _availableSeriesTypes;
+            private set { _availableSeriesTypes = value; }
         }
 
-        private ChartType _chartType;
-        public ChartType ChartType
+        private SeriesType _selectedSeriesType;
+        public SeriesType SelectedSeriesType
         {
-            get => _chartType;
-            set 
-            { 
-                _chartType = value;
-                RaisePropertyChanged("ChartType");
-            }
+            get => _selectedSeriesType;
+            set { _selectedSeriesType = value; }
         }
 
         private bool _YAxisSelected;
@@ -97,8 +94,12 @@ namespace DataVisualizer.Desktop.ViewModel
             : base(context, dialogService, validationService)
         {
             XAxisSelected = true;
-            ChartType = ChartType.Line;
-            ChartTypes = Enum.GetValues(typeof(ChartType));
+            
+            AvailableSeriesTypes = new ObservableCollection<SeriesType>();
+            AvailableSeriesTypes.Add(new SeriesType { ChartType = PlainSeriesTypes.Column, SeriesTypeLabel = "Säulendiagramm" });
+            AvailableSeriesTypes.Add(new SeriesType { ChartType = PlainSeriesTypes.Line, SeriesTypeLabel = "Liniendiagramm" });
+            AvailableSeriesTypes.Add(new SeriesType { ChartType = PlainSeriesTypes.Scatter, SeriesTypeLabel = "Streudiagramm" });
+
         }
 
         public void OnAxisChanged(string newAxis)
@@ -123,58 +124,67 @@ namespace DataVisualizer.Desktop.ViewModel
                 XSelection = SelectedRanges;
             else if (YAxisSelected)
                 YSelection = SelectedRanges;
+            Validate();
+            base.OnOkClicked(obj);
+        }
+
+        /// <summary>
+        /// Validation of selection. ValidationService validates only values, so selection validation
+        /// should be done in this method.
+        /// </summary>
+        protected override void Validate()
+        {
+            // Very common validation can be done before specific ones
             if (XSelection == null || XSelection.Length == 0)
             {
-                Error = true;
+                HasSelectionError = true;
                 ErrorText += "Auswählen Sie bitte X Werte.\n";
             }
             if (YSelection == null || YSelection.Length == 0)
             {
-                Error = true;
+                HasSelectionError = true;
                 ErrorText += "Auswählen Sie bitte Y Werte.\n";
             }
-            //No need to validate if no data selected
-            if (!Error)
-                Validate();
-            //Error message is shown in the base class. Error value will be reset.
-            base.OnOkClicked(obj);
-        }
-
-        private void Validate()
-        {
-            // Very common validation can be done before specific ones
             if (!_validationService.ValidateNumerical(XSelection) ||
                             !_validationService.ValidateNumerical(YSelection))
             {
-                Error = true;
-                ErrorText += string.Format("{0} Diagramm Werte müssen zahlenmäßig sein.\n", ChartType.ToString());
+                HasSelectionError = true;
+                ErrorText += string.Format("Die Werte von {0} müssen zahlenmäßig sein.\n", SelectedSeriesType.SeriesTypeLabel);
                 return;
             }
-            switch (ChartType)
+            if (SelectedSeriesType == null)
             {
-                case ChartType.Line:
-                    {
-                        if (!_validationService.ValidateUnique(XSelection[0]) ||
-                            !_validationService.ValidateOrdered(XSelection[0]))
+                HasSelectionError = true;
+                ErrorText += "Wählen Sie bitte den Diagrammentyp.";
+            }
+            else
+            {
+                switch (SelectedSeriesType.ChartType)
+                {
+                    case PlainSeriesTypes.Line:
                         {
-                            Error = true;
-                            ErrorText += "X Werte müssen einzigartig und geordnet sein.\n";
+                            if (!_validationService.ValidateUnique(XSelection[0]) ||
+                                !_validationService.ValidateOrdered(XSelection[0]))
+                            {
+                                HasSelectionError = true;
+                                ErrorText += "X Werte müssen einzigartig und geordnet sein.\n";
+                            }
+                            break;
                         }
-                        break;
-                    }
-                case ChartType.Column:
-                    {
-                        if (!_validationService.ValidateUnique(XSelection[0]))
+                    case PlainSeriesTypes.Column:
                         {
-                            Error = true;
-                            ErrorText += "X Werte müssen müssen einzigartig sein.\n";
+                            if (!_validationService.ValidateUnique(XSelection[0]))
+                            {
+                                HasSelectionError = true;
+                                ErrorText += "X Werte müssen müssen einzigartig sein.\n";
+                            }
+                            break;
                         }
-                        break;
-                    }
-                case ChartType.Scatter:
-                    {
-                        break;
-                    }
+                    case PlainSeriesTypes.Scatter:
+                        {
+                            break;
+                        }
+                }
             }
         }
     }

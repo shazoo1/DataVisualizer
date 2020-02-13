@@ -22,6 +22,7 @@ using Dragablz.Dockablz;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using DataVisualizer.Desktop.ViewModel.Graphs;
 
 namespace DataVisualizer.Desktop.ViewModel
 {
@@ -164,19 +165,24 @@ namespace DataVisualizer.Desktop.ViewModel
         public void AddNewTab(object obj)
         {
             BaseGraphViewModel model = null;
-            VMType? vm = _dialogService.SelectSurfaceType();
-            if (vm != null)
+            SurfaceType? sType = _dialogService.SelectSurfaceType();
+            if (sType != null)
             {
-                switch (vm.Value)
+                switch (sType.Value)
                 {
-                    case VMType.PieChartViewModel:
+                    case SurfaceType.PieChartSurface:
                         {
                             model = new PieChartViewModel(_context, _dialogService, _validationService);
                             break;
                         }
-                    case VMType.XYPlotViewModel:
+                    case SurfaceType.XYPlotSurface:
                         {
                             model = new XYPlotViewModel(_context, _dialogService, _validationService);
+                            break;
+                        }
+                    case SurfaceType.VerticalSurface:
+                        {
+                            model = new VerticalPlotViewModel(_context, _dialogService, _validationService);
                             break;
                         }
                 }
